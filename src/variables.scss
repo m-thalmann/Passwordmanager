@@ -1,0 +1,9 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+// https://material.io/design/color/
+$primary: mat-palette($mat-grey, 900);
+$accent:  mat-palette($mat-light-green, A700);
+$warn:    mat-palette($mat-red);
+
+$theme: mat-light-theme($primary, $accent, $warn);

@@ -1,0 +1,40 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="!(isHandset$ | async)">
+    <mat-toolbar><mat-icon style="margin-right: 10px;">account_circle</mat-icon> <span title="{{ username }}" style="text-overflow: ellipsis; overflow: hidden; max-width: calc(100% - 1.5em)">{{ username }}</span></mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/" [class.current]="currentRoute == '/'"><i class="fas fa-home"></i> Home</a>
+      <a mat-list-item routerLink="/passwords" [class.current]="currentRoute == '/passwords'"><i class="fas fa-key"></i> Passwords</a>
+      <a mat-list-item routerLink="/tags" [class.current]="currentRoute == '/tags'"><i class="fas fa-tags"></i> Tags</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle navigation"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Navigation toggle icon">menu</mat-icon>
+      </button>
+      <a routerLink="/" id="app-title">Passwordmanager</a>
+      <mat-menu #appMenu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="showAbout()"><mat-icon>info</mat-icon> About</button>
+        <a mat-menu-item routerLink="/settings"><mat-icon>settings</mat-icon> Settings</a>
+        <button mat-menu-item (click)="logout()"><mat-icon color="warn">logout</mat-icon> Logout</button>
+      </mat-menu>
+
+      <span class="spacer"></span>
+      
+      <button mat-icon-button [matMenuTriggerFor]="appMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>      
+    </mat-toolbar>
+    <main>
+        <ng-content></ng-content>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
