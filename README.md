@@ -13,7 +13,8 @@ This passwordmanager is a progressive-web-app (PWA). It is able to store your pa
 
 First of all you have to clone this repository. You will need to have nodejs and npm installed for the next command.
 ```
-npm install # this will install all of the dependencies
+npm install -g @angular/cli   # install the angular-cli globally
+npm install                   # this will install all of the dependencies
 ```
 Then you can run the development server:
 
