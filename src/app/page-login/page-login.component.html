@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar id="card_icon"></div>
+    <mat-card-title>Passwordmanager</mat-card-title>
+    <mat-card-subtitle>Login</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form>
+      <mat-form-field>
+        <input matInput [(ngModel)]="username" type="text" placeholder="Username" #username_field [ngModelOptions]="{standalone: true}" (keyup.enter)="login()" />
+      </mat-form-field>
+    
+      <mat-form-field>
+        <input matInput [(ngModel)]="password" type="password" placeholder="Password" #password_field [ngModelOptions]="{standalone: true}" (keyup.enter)="login()" />
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-button (click)="login()">
+      <span *ngIf="!logging_in">Login</span>
+      <mat-spinner *ngIf="logging_in" color="accent" [diameter]="16" style="margin: 0 auto"></mat-spinner>
+    </button>
+    <a mat-button routerLink="/register">Register</a>
+  </mat-card-actions>
+</mat-card>

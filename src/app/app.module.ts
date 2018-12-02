@@ -12,6 +12,9 @@ import { PagePasswordsComponent } from './page-passwords/page-passwords.componen
 import { PageTagsComponent } from './page-tags/page-tags.component';
 import { PageSettingsComponent } from './page-settings/page-settings.component';
 import { AboutDialogComponent } from './about-dialog/about-dialog.component';
+import { PageLoginComponent } from './page-login/page-login.component';
+import { PageRegisterComponent } from './page-register/page-register.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -23,9 +26,12 @@ import { AboutDialogComponent } from './about-dialog/about-dialog.component';
     PageTagsComponent,
     PageSettingsComponent,
     AboutDialogComponent,
+    PageLoginComponent,
+    PageRegisterComponent,
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,

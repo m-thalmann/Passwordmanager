@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Router, NavigationStart } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'main-nav',
@@ -21,11 +22,10 @@ export class MainNavComponent {
   @ViewChild("search_field") search_field: ElementRef;
 
   logout() {
-    console.warn("TODO: implement");
+    this.user.logout();
   }
 
   showAbout() {
-    console.warn("TODO: implement");
     const dialogRef = this.dialog.open(AboutDialogComponent, {
       width: '250px'
     });
@@ -48,8 +48,8 @@ export class MainNavComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router, public dialog: MatDialog) {
-    router.events.subscribe(event => {
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router, public dialog: MatDialog, private user: UserService) {
+    this.router.events.subscribe(event => {
       if(event instanceof NavigationStart) {
         this.currentRoute = event.url;
       }
