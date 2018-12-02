@@ -11,6 +11,7 @@ import { PageHomeComponent } from './page-home/page-home.component';
 import { PagePasswordsComponent } from './page-passwords/page-passwords.component';
 import { PageTagsComponent } from './page-tags/page-tags.component';
 import { PageSettingsComponent } from './page-settings/page-settings.component';
+import { AboutDialogComponent } from './about-dialog/about-dialog.component';
 
 
 @NgModule({
@@ -21,15 +22,17 @@ import { PageSettingsComponent } from './page-settings/page-settings.component';
     PagePasswordsComponent,
     PageTagsComponent,
     PageSettingsComponent,
+    AboutDialogComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    LayoutModule
+    LayoutModule,
   ],
   providers: [],
+  entryComponents:[AboutDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
