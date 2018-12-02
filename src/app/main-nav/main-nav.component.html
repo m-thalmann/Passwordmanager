@@ -20,7 +20,7 @@
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Navigation toggle icon">menu</mat-icon>
       </button>
-      <a routerLink="/" id="app-title">Passwordmanager</a>
+      <a routerLink="/" id="app-title" [style.opacity]="!(isHandset$ | async) || !search_opened ? 1 : 0">Passwordmanager</a>
       <mat-menu #appMenu="matMenu" xPosition="before">
         <button mat-menu-item (click)="showAbout()"><mat-icon>info</mat-icon> About</button>
         <a mat-menu-item routerLink="/settings"><mat-icon>settings</mat-icon> Settings</a>
@@ -28,10 +28,21 @@
       </mat-menu>
 
       <span class="spacer"></span>
+
+      <span id="search_container">
+        <button mat-icon-button (click)="toggleSearch()">
+          <mat-icon>search</mat-icon>
+        </button>
+
+        <span id="search_form" [ngClass]="{'open': search_opened}">
+          <input matInput [(ngModel)]="search" autocomplete="off" #search_field (blur)="toggleSearch(false)">
+        </span>
+      </span>
+
       
       <button mat-icon-button [matMenuTriggerFor]="appMenu">
         <mat-icon>more_vert</mat-icon>
-      </button>      
+      </button>
     </mat-toolbar>
     <main>
         <ng-content></ng-content>

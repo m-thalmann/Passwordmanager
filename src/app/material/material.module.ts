@@ -6,8 +6,13 @@ import {
   MatListModule,
   MatMenuModule,
   MatIconModule,
-  MatDialogModule
+  MatDialogModule,
+  MatInputModule
 } from '@angular/material';
+
+import {
+  FormsModule
+} from '@angular/forms';
 
 @NgModule({
   declarations: [],
@@ -19,7 +24,9 @@ import {
     MatListModule,
     MatMenuModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatInputModule,
+    FormsModule
   ],
 })
 export class MaterialModule { }
