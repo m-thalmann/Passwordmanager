@@ -15,6 +15,7 @@ import { AboutDialogComponent } from './about-dialog/about-dialog.component';
 import { PageLoginComponent } from './page-login/page-login.component';
 import { PageRegisterComponent } from './page-register/page-register.component';
 import { HttpClientModule } from '@angular/common/http';
+import { Md5Pipe } from './md5.pipe';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { HttpClientModule } from '@angular/common/http';
     AboutDialogComponent,
     PageLoginComponent,
     PageRegisterComponent,
+    Md5Pipe,
   ],
   imports: [
     BrowserModule,
