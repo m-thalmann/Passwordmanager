@@ -2,7 +2,6 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Router, NavigationStart } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { UserService } from '../user.service';
@@ -48,12 +47,6 @@ export class MainNavComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router, public dialog: MatDialog, private user: UserService) {
-    this.router.events.subscribe(event => {
-      if(event instanceof NavigationStart) {
-        this.currentRoute = event.url;
-      }
-    });
-  }
+  constructor(private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private user: UserService) { }
 
 }

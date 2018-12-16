@@ -27,10 +27,9 @@ export class PageLoginComponent {
     this.api.login(this.username, this.password).subscribe(
       result => {
         this.logging_in = false;
-        console.log(result);
         this.user.setToken(result['token']);
         this.route.queryParams.subscribe(params => {
-          let redirect_url = '/';
+          let redirect_url = '/home';
 
           if (params.redirectUrl){
             redirect_url = params.redirectUrl;
