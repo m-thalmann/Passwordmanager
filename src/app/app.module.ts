@@ -17,7 +17,6 @@ import { PageRegisterComponent } from './page-register/page-register.component';
 import { HttpClientModule } from '@angular/common/http';
 import { Md5Pipe } from './md5.pipe';
 
-
 @NgModule({
   declarations: [
     AppComponent,

@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="!pin_login">
   <mat-card-header>
     <div mat-card-avatar id="card_icon"></div>
     <mat-card-title>Passwordmanager</mat-card-title>
@@ -21,5 +21,30 @@
       <mat-spinner *ngIf="logging_in" color="accent" [diameter]="16" style="margin: 0 auto"></mat-spinner>
     </button>
     <a mat-button routerLink="/register">Register</a>
+  </mat-card-actions>
+</mat-card>
+
+<mat-card *ngIf="pin_login">
+  <mat-card-header>
+    <div mat-card-avatar id="card_icon"></div>
+    <mat-card-title>Passwordmanager</mat-card-title>
+    <mat-card-subtitle>Login</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form>
+      <mat-form-field>
+        <input matInput [(ngModel)]="pin" type="password" placeholder="PIN" #pin_field [ngModelOptions]="{standalone: true}"
+          (keyup.enter)="login_pin" />
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-button (click)="login_pin()">
+      <span *ngIf="!logging_in">Login</span>
+      <mat-spinner *ngIf="logging_in" color="accent" [diameter]="16" style="margin: 0 auto"></mat-spinner>
+    </button>
+    <button mat-button (click)="logout()" color="warn">
+      <span>Logout</span>
+    </button>
   </mat-card-actions>
 </mat-card>

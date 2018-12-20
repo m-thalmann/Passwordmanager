@@ -8,7 +8,7 @@ import { UserService } from './user.service';
 export class AuthGuard implements CanActivate {
   constructor(private user: UserService, private router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate(route: ActivatedRouteSnapshot) {
     const redirectUrl = route['_routerState']['url'];
 
     if (this.user.isLoggedin()) {
