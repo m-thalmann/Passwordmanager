@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Blowfish } from 'javascript-blowfish';
+import { Md5Pipe } from './md5.pipe';
 
 const TOKEN = 'TOKEN';
 const USER = 'USER';
@@ -11,18 +12,49 @@ const TRIES = 'TRIES';
 const TEST_ITEM: string = '94d2a3c6dd19337f2511cdf8b4bf907e==';
 const MAX_TRIES: number = -1;
 
+class User{
+  id: number;
+  username: string;
+  email: string;
+  active: boolean;
+
+  constructor(id?, username?, email?, active?){
+    this.id = id ? id : 0;
+    this.username = username ? username : "Guest";
+    this.email = email ? email : "";
+    this.active = active ? active : 1;
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
   password: string = null;
+  user: User = new User();
+
+  constructor(){
+    let _user = localStorage.getItem(USER);
+
+    try{
+      let user = JSON.parse(_user);
+
+      if(user != null){
+        this.user.id = user.id;
+        this.user.username = user.username;
+        this.user.email = user.email;
+        this.user.active = user.active;
+      }
+    }catch(e){
+    }
+  }
 
   login({user, token, password}): void {
     localStorage.setItem(TOKEN, token);
     localStorage.setItem(USER, JSON.stringify(user));
     localStorage.removeItem(PW);
-    this.password = password;
+    this.password = new Md5Pipe().transform(password);
   }
 
   unlock(pin: number): UserService.unlock_return{
@@ -72,7 +104,6 @@ export class UserService {
     localStorage.removeItem(USER);
     localStorage.removeItem(PW);
     // TODO: remove all passwords
-    // this.router.navigateByUrl("/login");
     location.href = "/login";
   }
 
@@ -104,6 +135,14 @@ export class UserService {
       let test_item = bf.base64Encode(bf.encrypt(TEST_ITEM));
 
       localStorage.setItem(TEST_ITEM_KEY, test_item);
+    }
+  }
+  
+  removePIN(){
+    if(this.isLoggedin()){
+      localStorage.removeItem(TEST_ITEM_KEY);
+      localStorage.removeItem(TRIES);
+      localStorage.removeItem(PW);
     }
   }
 }

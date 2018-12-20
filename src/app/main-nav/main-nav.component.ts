@@ -20,6 +20,10 @@ export class MainNavComponent {
 
   @ViewChild("search_field") search_field: ElementRef;
 
+  lock(){
+    location.href = '/login';
+  }
+
   logout() {
     this.user.logout();
   }
@@ -47,6 +51,7 @@ export class MainNavComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private user: UserService) { }
+  constructor(private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private user: UserService) {
+  }
 
 }

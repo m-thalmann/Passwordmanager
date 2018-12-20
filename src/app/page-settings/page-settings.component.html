@@ -1,5 +1,33 @@
 <main-nav>
-  <p>
-    page-settings works!
-  </p>
+  <main>
+    <h2>Settings</h2>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>security</mat-icon>
+        <mat-card-title>
+          PIN -
+          <span *ngIf="this.user.hasPIN()" style="color: #40f712">Active</span>
+          <span *ngIf="!this.user.hasPIN()" style="color: #f12">Deactivated</span>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form>
+          <mat-form-field>
+            <input matInput [(ngModel)]="password" type="password" placeholder="Password" #password_field [ngModelOptions]="{standalone: true}" />
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput [(ngModel)]="new_pin" type="password" placeholder="New PIN" #new_pin_field [ngModelOptions]="{standalone: true}" />
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button *ngIf="this.user.hasPIN()" color="warn" (click)="remove_pin()">Remove</button>
+        <button mat-button *ngIf="this.user.hasPIN()" color="primary" (click)="change_pin()">Change</button>
+
+        <button mat-button *ngIf="!this.user.hasPIN()" color="accent" (click)="change_pin()">Add</button>
+      </mat-card-actions>
+    </mat-card>
+  </main>
 </main-nav>

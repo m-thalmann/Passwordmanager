@@ -34,7 +34,7 @@
     <form>
       <mat-form-field>
         <input matInput [(ngModel)]="pin" type="password" placeholder="PIN" #pin_field [ngModelOptions]="{standalone: true}"
-          (keyup.enter)="login_pin" />
+          (keyup.enter)="login_pin()" />
       </mat-form-field>
     </form>
   </mat-card-content>
