@@ -1,7 +1,9 @@
 <mat-card>
   <mat-card-header>
-    <div mat-card-avatar id="card_icon"></div>
-    <mat-card-title>Passwordmanager</mat-card-title>
+    <mat-icon mat-card-avatar *ngIf="this.login_type == LoginType.default">lock</mat-icon>
+    <mat-icon mat-card-avatar *ngIf="this.login_type != LoginType.default">account_circle</mat-icon>
+    <mat-card-title *ngIf="this.login_type == LoginType.default">Passwordmanager</mat-card-title>
+    <mat-card-title *ngIf="this.login_type != LoginType.default">{{ this.user.user.username }}</mat-card-title>
     <mat-card-subtitle *ngIf="this.login_type == LoginType.default">Login</mat-card-subtitle>
     <mat-card-subtitle *ngIf="this.login_type != LoginType.default">Locked</mat-card-subtitle>
   </mat-card-header>

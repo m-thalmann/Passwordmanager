@@ -10,7 +10,7 @@ const TEST_ITEM_KEY = 'TEST';
 const TRIES = 'TRIES';
 
 const TEST_ITEM: string = '94d2a3c6dd19337f2511cdf8b4bf907e==';
-const MAX_TRIES: number = -1;
+const MAX_TRIES: number = 5;
 
 class User{
   id: number;
@@ -37,6 +37,7 @@ export class UserService {
 
   password: string = null;
   user: User = new User();
+  token: string = null;
 
   login({user, token, password}): void {
     localStorage.setItem(TOKEN, token);
@@ -52,6 +53,7 @@ export class UserService {
 
   setUser(){
     let _user = localStorage.getItem(USER);
+    let token = localStorage.getItem(TOKEN);
 
     try{
       let user = JSON.parse(_user);
@@ -61,6 +63,10 @@ export class UserService {
         this.user.username = user.username;
         this.user.email = user.email;
         this.user.active = user.active;
+      }
+
+      if(token != null){
+        this.token = token;
       }
     }catch(e){
     }

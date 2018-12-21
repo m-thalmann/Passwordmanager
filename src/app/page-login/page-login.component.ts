@@ -97,6 +97,7 @@ export class PageLoginComponent {
           panelClass: 'snackbar_error'
         });
         console.error(result);
+        this.password = this.username = this.pin = '';
       }
     );
   }
@@ -134,6 +135,8 @@ export class PageLoginComponent {
           panelClass: 'snackbar_error'
         });
       }
+
+      this.password = this.username = this.pin = '';
   
       this.logging_in = false;
   }
@@ -178,7 +181,8 @@ export class PageLoginComponent {
         panelClass: 'snackbar_error'
       });
     }
-
+    
+    this.password = this.username = this.pin = '';
     this.logging_in = false;
   }
 

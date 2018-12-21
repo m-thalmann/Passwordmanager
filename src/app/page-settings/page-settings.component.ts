@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { UserService } from '../user.service';
 import { MatSnackBar } from '@angular/material';
 import { Md5Pipe } from '../md5.pipe';
+import { log } from 'util';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-page-settings',
@@ -12,8 +14,13 @@ export class PageSettingsComponent {
 
   password: string = '';
   new_pin: string = '';
+  new_email: string = '';
+  new_password: string = '';
+  new_password_retype: string = '';
 
-  constructor(private user: UserService, public snackBar: MatSnackBar) { }
+  settings_changing: boolean = false;
+
+  constructor(private user: UserService, private api: ApiService, public snackBar: MatSnackBar) { }
 
   checkPW(){
     let pw = new Md5Pipe().transform(this.password);
@@ -49,6 +56,44 @@ export class PageSettingsComponent {
         panelClass: 'snackbar_error'
       });
     }
-    this.password = this.new_pin = "";
+    this.password = this.new_pin = '';
+  }
+
+  async change_settings(){
+    if(this.checkPW()){
+      try{
+        this.settings_changing = true;
+
+        let data = {};
+
+        if(this.new_email != ''){
+          data['email'] = this.new_email;
+        }
+
+        if(this.new_password != '' && this.new_password_retype != ''){
+          if(this.new_password == this.new_password_retype){
+            data['password'] = this.new_password;
+          }else{
+            this.snackBar.open('Passwords do not match', "OK", {
+              duration: 5000,
+              panelClass: 'snackbar_error'
+            });
+            return;
+          }
+        }
+
+        await this.api.updateSettings(data);
+      }catch(e){
+        this.snackBar.open(e.error.error, "OK", {
+          duration: 5000,
+          panelClass: 'snackbar_error'
+        });
+      }
+      
+      this.password = this.new_email = this.new_password = this.new_password_retype = '';
+      
+      await this.api.checkAuth();
+      this.settings_changing = false;
+    }
   }
 }

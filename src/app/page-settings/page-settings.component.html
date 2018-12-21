@@ -4,10 +4,44 @@
 
     <mat-card>
       <mat-card-header>
+        <mat-icon mat-card-avatar>person</mat-icon>
+        <mat-card-title>Profile</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item>
+            <mat-icon mat-list-icon>fingerprint</mat-icon>
+            <h4 mat-line>{{ this.user.user.id }}</h4>
+            <small mat-line>ID</small>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>perm_identity</mat-icon>
+            <h4 mat-line>{{ this.user.user.username }}</h4>
+            <small mat-line>Username</small>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>email</mat-icon>
+            <h4 mat-line>{{ this.user.user.email }}</h4>
+            <small mat-line>E-Mail</small>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>info</mat-icon>
+            <h4 mat-line *ngIf="this.user.user.active != 0" style="color: #42df1a">Active</h4>
+            <h4 mat-line *ngIf="this.user.user.active == 0" style="color: #f12">Blocked</h4>
+            <small mat-line>Status</small>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-actions>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
         <mat-icon mat-card-avatar>security</mat-icon>
         <mat-card-title>
           PIN -
-          <span *ngIf="this.user.hasPIN()" style="color: #40f712">Active</span>
+          <span *ngIf="this.user.hasPIN()" style="color: #42df1a">Active</span>
           <span *ngIf="!this.user.hasPIN()" style="color: #f12">Deactivated</span>
         </mat-card-title>
       </mat-card-header>
@@ -23,10 +57,56 @@
         </form>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button *ngIf="this.user.hasPIN()" color="warn" (click)="remove_pin()">Remove</button>
-        <button mat-button *ngIf="this.user.hasPIN()" color="primary" (click)="change_pin()">Change</button>
+        <button mat-button *ngIf="this.user.hasPIN()" color="warn" (click)="remove_pin()" [disabled]="settings_changing">Remove</button>
+        <button mat-button *ngIf="this.user.hasPIN()" color="primary" (click)="change_pin()" [disabled]="settings_changing">Change</button>
 
-        <button mat-button *ngIf="!this.user.hasPIN()" color="accent" (click)="change_pin()">Add</button>
+        <button mat-button *ngIf="!this.user.hasPIN()" color="accent" (click)="change_pin()" [disabled]="settings_changing">Add</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>mail</mat-icon>
+        <mat-card-title>E-Mail</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form>
+          <mat-form-field>
+            <input matInput [(ngModel)]="password" type="password" placeholder="Password" #password_field [ngModelOptions]="{standalone: true}" />
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput [(ngModel)]="new_email" type="email" placeholder="New E-Mail" #new_email_field [ngModelOptions]="{standalone: true}" />
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="change_settings()" [disabled]="settings_changing">Change</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>vpn_key</mat-icon>
+        <mat-card-title>Password</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form>
+          <mat-form-field>
+            <input matInput [(ngModel)]="password" type="password" placeholder="Password" #password_field [ngModelOptions]="{standalone: true}" />
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput [(ngModel)]="new_password" type="password" placeholder="New Password" #new_password_field [ngModelOptions]="{standalone: true}" />
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput [(ngModel)]="new_password_retype" type="password" placeholder="Retype Password" #new_password_retype_field [ngModelOptions]="{standalone: true}" />
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="change_settings()" [disabled]="settings_changing">Change</button>
       </mat-card-actions>
     </mat-card>
   </main>
