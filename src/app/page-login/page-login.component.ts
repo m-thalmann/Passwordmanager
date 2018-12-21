@@ -4,6 +4,12 @@ import { ApiService } from '../api.service';
 import { MatSnackBar } from '@angular/material';
 import { UserService } from '../user.service';
 
+enum LoginType{
+  default,
+  pin,
+  password
+}
+
 @Component({
   selector: 'app-page-login',
   templateUrl: './page-login.component.html',
@@ -18,7 +24,9 @@ export class PageLoginComponent {
 
   logging_in: boolean = false;
 
-  pin_login: boolean = false;
+  login_type: LoginType = LoginType.default;
+
+  LoginType = LoginType;
 
   constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, public snackBar: MatSnackBar, private user: UserService) { 
     if(user.isLoggedin()){
@@ -33,11 +41,32 @@ export class PageLoginComponent {
       });
     }
 
-    this.pin_login = user.isKnown() && user.hasPIN();
+    if(user.isKnown() && user.hasPIN()){
+      this.login_type = LoginType.pin;
+    }else if(user.isKnown() && user.hasTest()){
+      this.login_type = LoginType.password;
+    }
   }
 
-  login() {
-    if(this.logging_in)
+  login(){
+    switch(this.login_type){
+      case LoginType.pin: {
+        this.login_pin();
+        break;
+      }
+      case LoginType.password: {
+        this.login_password();
+        break;
+      }
+      default: {
+        this.login_default();
+        break;
+      }
+    }
+  }
+
+  login_default() {
+    if(this.logging_in || this.login_type != LoginType.default)
       return;
 
     this.logging_in = true;
@@ -72,14 +101,51 @@ export class PageLoginComponent {
     );
   }
 
+  login_password(){
+    if(this.logging_in || this.login_type != LoginType.password)
+      return;
+
+      this.logging_in = true;
+
+      let ret = this.user.unlock(this.password);
+      if(ret == UserService.unlock_return.CORRECT){
+        this.route.queryParams.subscribe(params => {
+          let redirect_url = '/home';
+
+          if (params.redirectUrl) {
+            redirect_url = params.redirectUrl;
+          }
+
+          this.router.navigateByUrl(redirect_url);
+        });
+      }else if(ret == UserService.unlock_return.WRONG){
+        this.snackBar.open("Wrong Password", "OK", {
+          duration: 5000,
+          panelClass: 'snackbar_error'
+        });
+      }else if(ret == UserService.unlock_return.MAX_TRIES){
+        this.snackBar.open("Too many tries", "OK", {
+          duration: 5000,
+          panelClass: 'snackbar_error'
+        });
+      }else if(ret == UserService.unlock_return.ERROR){
+        this.snackBar.open("Error", "OK", {
+          duration: 5000,
+          panelClass: 'snackbar_error'
+        });
+      }
+  
+      this.logging_in = false;
+  }
+
   login_pin(){
-    if(!this.pin_login)
+    if(this.logging_in || this.login_type != LoginType.pin)
       return;
 
     this.logging_in = true;
 
     try{
-      let ret = this.user.unlock(parseInt(this.pin));
+      let ret = this.user.unlock_pin(parseInt(this.pin));
       if(ret == UserService.unlock_return.CORRECT){
         this.route.queryParams.subscribe(params => {
           let redirect_url = '/home';

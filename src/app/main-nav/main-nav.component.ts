@@ -20,7 +20,7 @@ export class MainNavComponent {
   @ViewChild("search_field") search_field: ElementRef;
 
   lock(){
-    location.href = '/login';
+    location.reload();
   }
 
   logout() {

@@ -1,17 +1,25 @@
-<mat-card *ngIf="!pin_login">
+<mat-card>
   <mat-card-header>
     <div mat-card-avatar id="card_icon"></div>
     <mat-card-title>Passwordmanager</mat-card-title>
-    <mat-card-subtitle>Login</mat-card-subtitle>
+    <mat-card-subtitle *ngIf="this.login_type == LoginType.default">Login</mat-card-subtitle>
+    <mat-card-subtitle *ngIf="this.login_type != LoginType.default">Locked</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <form>
-      <mat-form-field>
-        <input matInput [(ngModel)]="username" type="text" placeholder="Username" #username_field [ngModelOptions]="{standalone: true}" (keyup.enter)="login()" />
+      <mat-form-field *ngIf="this.login_type == LoginType.default">
+        <input matInput [(ngModel)]="username" type="text" placeholder="Username" #username_field
+          [ngModelOptions]="{standalone: true}" (keyup.enter)="login()" />
       </mat-form-field>
     
-      <mat-form-field>
-        <input matInput [(ngModel)]="password" type="password" placeholder="Password" #password_field [ngModelOptions]="{standalone: true}" (keyup.enter)="login()" />
+      <mat-form-field *ngIf="this.login_type != LoginType.pin">
+        <input matInput [(ngModel)]="password" type="password" placeholder="Password" #password_field
+          [ngModelOptions]="{standalone: true}" (keyup.enter)="login()" />
+      </mat-form-field>
+
+      <mat-form-field *ngIf="this.login_type == LoginType.pin">
+        <input matInput [(ngModel)]="pin" type="password" placeholder="PIN" #pin_field
+          [ngModelOptions]="{standalone: true}" (keyup.enter)="login()" />
       </mat-form-field>
     </form>
   </mat-card-content>
@@ -20,30 +28,8 @@
       <span *ngIf="!logging_in">Login</span>
       <mat-spinner *ngIf="logging_in" color="accent" [diameter]="16" style="margin: 0 auto"></mat-spinner>
     </button>
-    <a mat-button routerLink="/register">Register</a>
-  </mat-card-actions>
-</mat-card>
-
-<mat-card *ngIf="pin_login">
-  <mat-card-header>
-    <div mat-card-avatar id="card_icon"></div>
-    <mat-card-title>Passwordmanager</mat-card-title>
-    <mat-card-subtitle>Login</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <form>
-      <mat-form-field>
-        <input matInput [(ngModel)]="pin" type="password" placeholder="PIN" #pin_field [ngModelOptions]="{standalone: true}"
-          (keyup.enter)="login_pin()" />
-      </mat-form-field>
-    </form>
-  </mat-card-content>
-  <mat-card-actions align="end">
-    <button mat-button (click)="login_pin()">
-      <span *ngIf="!logging_in">Login</span>
-      <mat-spinner *ngIf="logging_in" color="accent" [diameter]="16" style="margin: 0 auto"></mat-spinner>
-    </button>
-    <button mat-button (click)="logout()" color="warn">
+    <a mat-button routerLink="/register" *ngIf="this.login_type == LoginType.default">Register</a>
+    <button mat-button (click)="logout()" color="warn" *ngIf="this.login_type != LoginType.default">
       <span>Logout</span>
     </button>
   </mat-card-actions>

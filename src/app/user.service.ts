@@ -44,6 +44,10 @@ export class UserService {
     localStorage.removeItem(PW);
     this.password = new Md5Pipe().transform(password);
     this.setUser();
+
+    let bf = new Blowfish(this.password);
+    let test_item = bf.base64Encode(bf.encrypt(TEST_ITEM));
+    localStorage.setItem(TEST_ITEM_KEY, test_item);
   }
 
   setUser(){
@@ -62,7 +66,7 @@ export class UserService {
     }
   }
 
-  unlock(pin: number): UserService.unlock_return{
+  unlock_pin(pin: number): UserService.unlock_return{
     if(this.hasPIN()){
       let _tries = localStorage.getItem(TRIES);
       _tries = _tries ? _tries : "0";
@@ -101,7 +105,43 @@ export class UserService {
 
     return UserService.unlock_return.WRONG;
   }
-  
+
+  unlock(password: string): UserService.unlock_return{
+    if(this.hasTest() && this.isKnown()){
+      let _tries = localStorage.getItem(TRIES);
+      _tries = _tries ? _tries : "0";
+
+      let tries: number = 0;
+
+      try{
+        tries = parseInt(_tries);
+      }catch(e){}
+
+      if(MAX_TRIES >= 1 && tries >= MAX_TRIES){
+        return UserService.unlock_return.MAX_TRIES;
+      }
+
+      this.password = new Md5Pipe().transform(password);
+
+      let test_item = localStorage.getItem(TEST_ITEM_KEY);
+      
+      if(!test_item)
+        return UserService.unlock_return.ERROR;
+      
+      let bf = new Blowfish(this.password);
+
+      if (bf.trimZeros(bf.decrypt(bf.base64Decode(test_item))) == TEST_ITEM){
+        localStorage.setItem(TRIES, "0");
+        return UserService.unlock_return.CORRECT;
+      }else{
+        this.password = null;
+        localStorage.setItem(TRIES, (tries+1).toString());
+      }
+    }
+
+    return UserService.unlock_return.WRONG;
+  }
+
   logout() {
     localStorage.removeItem(TEST_ITEM_KEY);
     localStorage.removeItem(TRIES);
@@ -135,20 +175,18 @@ export class UserService {
       let bf = new Blowfish(pin.toString());
       let pw = bf.base64Encode(bf.encrypt(this.password));
       localStorage.setItem(PW, pw);
-
-      bf = new Blowfish(this.password);
-      let test_item = bf.base64Encode(bf.encrypt(TEST_ITEM));
-
-      localStorage.setItem(TEST_ITEM_KEY, test_item);
     }
   }
   
   removePIN(){
     if(this.isLoggedin()){
-      localStorage.removeItem(TEST_ITEM_KEY);
       localStorage.removeItem(TRIES);
       localStorage.removeItem(PW);
     }
+  }
+
+  hasTest(){
+    return localStorage.getItem(TEST_ITEM_KEY) != null;
   }
 }
 
