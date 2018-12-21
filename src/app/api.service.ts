@@ -47,6 +47,16 @@ export class ApiService {
     }
   }
 
+  async logout(){
+    try {
+      let ret = await this.http.get(API_URL + 'logout/' + this.user.token).toPromise();
+
+      return ret;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   async updateSettings(settings: Settings){
     let params = new HttpParams();
 

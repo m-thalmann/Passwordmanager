@@ -16,9 +16,9 @@ class User{
   id: number;
   username: string;
   email: string;
-  active: boolean;
+  active: number;
 
-  constructor(id?, username?, email?, active?){
+  constructor(id?: number, username?: string, email?: string, active?: number){
     this.id = id ? id : 0;
     this.username = username ? username : "Guest";
     this.email = email ? email : "";
@@ -155,6 +155,7 @@ export class UserService {
     localStorage.removeItem(USER);
     localStorage.removeItem(PW);
     // TODO: remove all passwords
+
     location.href = "/login";
   }
 

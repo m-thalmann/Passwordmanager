@@ -2,9 +2,10 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { UserService } from '../user.service';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'main-nav',
@@ -23,12 +24,17 @@ export class MainNavComponent {
     location.reload();
   }
 
-  logout() {
+  async logout() {
+    this.snackBar.open("Logging out...", "OK", {
+      duration: 5000,
+    });
+
+    await this.api.logout();
     this.user.logout();
   }
 
   showAbout() {
-    const dialogRef = this.dialog.open(AboutDialogComponent, {
+    this.dialog.open(AboutDialogComponent, {
       width: '250px'
     });
   }
@@ -50,7 +56,7 @@ export class MainNavComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private user: UserService) {
+  constructor(private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private user: UserService, private api: ApiService, private snackBar: MatSnackBar) {
   }
 
 }
