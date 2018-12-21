@@ -13,7 +13,6 @@ import { UserService } from '../user.service';
 })
 export class MainNavComponent {
 
-  username: string = 'Guest';
   currentRoute: string = '/';
   search_opened: boolean = false;
   search: string = '';

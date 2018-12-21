@@ -31,10 +31,22 @@ class User{
 })
 export class UserService {
 
+  constructor(){
+    this.setUser();
+  }
+
   password: string = null;
   user: User = new User();
 
-  constructor(){
+  login({user, token, password}): void {
+    localStorage.setItem(TOKEN, token);
+    localStorage.setItem(USER, JSON.stringify(user));
+    localStorage.removeItem(PW);
+    this.password = new Md5Pipe().transform(password);
+    this.setUser();
+  }
+
+  setUser(){
     let _user = localStorage.getItem(USER);
 
     try{
@@ -48,13 +60,6 @@ export class UserService {
       }
     }catch(e){
     }
-  }
-
-  login({user, token, password}): void {
-    localStorage.setItem(TOKEN, token);
-    localStorage.setItem(USER, JSON.stringify(user));
-    localStorage.removeItem(PW);
-    this.password = new Md5Pipe().transform(password);
   }
 
   unlock(pin: number): UserService.unlock_return{

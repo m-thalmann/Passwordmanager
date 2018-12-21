@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Md5Pipe } from './md5.pipe';
 
-const API_URL = 'http://127.0.0.1:8080/';
+import { Config } from '../config/config';
+
+const API_URL = Config.api_url;
 
 interface LoginResult{
   user: {
