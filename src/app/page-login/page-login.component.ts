@@ -184,7 +184,12 @@ export class PageLoginComponent {
     this.logging_in = false;
   }
 
-  logout(){
+  async logout() {
+    this.snackBar.open("Logging out...", "OK", {
+      duration: 5000,
+    });
+
+    await this.api.logout();
     this.user.logout();
   }
 }
