@@ -14,3 +14,35 @@ body{
         color: mat-color($warn);
     }
 }
+
+.align-middle{
+    vertical-align: middle;
+}
+
+.align-top{
+    vertical-align: top;
+}
+
+.align-center-margin{
+    margin: 0 auto;
+}
+
+.color-primary{
+    color: mat-color($primary);
+}
+
+.color-accent{
+    color: mat-color($accent);
+}
+
+.background-primary{
+    background-color: mat-color($primary);
+}
+
+.background-accent{
+    background-color: mat-color($accent);
+}
+
+.pointer{
+    cursor: pointer;
+}

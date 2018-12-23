@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { UserService } from '../user.service';
 import { MatSnackBar } from '@angular/material';
 import { Md5Pipe } from '../md5.pipe';
-import { log } from 'util';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -19,6 +18,11 @@ export class PageSettingsComponent {
   new_password_retype: string = '';
 
   settings_changing: boolean = false;
+  sessions_loading: boolean = true;
+
+  sessions = this.api.getLogins().finally(() => {
+    this.sessions_loading = false;
+  });
 
   constructor(private user: UserService, private api: ApiService, public snackBar: MatSnackBar) { }
 
@@ -95,5 +99,35 @@ export class PageSettingsComponent {
       await this.api.checkAuth();
       this.settings_changing = false;
     }
+  }
+
+  async removeLogin(id: number){
+    this.settings_changing = true;
+
+    try{
+      await this.api.logoutId(id);
+    }catch(e){
+      this.snackBar.open(e.error.error, "OK", {
+        duration: 5000,
+        panelClass: 'snackbar_error'
+      });
+    }finally{
+      await this.api.checkAuth();
+
+      this.reloadLogins();
+      this.settings_changing = false;
+    }
+  }
+
+  async removeAllLogins(){
+    await this.api.logoutAll();
+    await this.api.checkAuth();
+  }
+
+  reloadLogins(){
+    this.sessions_loading = true;
+    this.sessions = this.api.getLogins().finally(() => {
+      this.sessions_loading = false;
+    });
   }
 }

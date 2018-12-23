@@ -20,6 +20,16 @@
                 display: block;
                 margin: 0 16px;
             }
+
+            #remember_section{
+                display: flex;
+                align-content: center;
+                align-items: center;
+
+                mat-checkbox{
+                    margin: 0 1em;
+                }
+            }
         }
     }
 }

@@ -17,6 +17,8 @@ enum LoginType{
 })
 export class PageLoginComponent {
 
+  remember: boolean = false;
+
   username: string = '';
   password: string = '';
 
@@ -74,11 +76,7 @@ export class PageLoginComponent {
     this.api.login(this.username, this.password).subscribe(
       result => {
         this.logging_in = false;
-        this.user.login({
-          user: result.user,
-          token: result.token,
-          password: this.password
-        });
+        this.user.login(result.user, result.token, this.password, this.remember);
 
         this.route.queryParams.subscribe(params => {
           let redirect_url = '/home';

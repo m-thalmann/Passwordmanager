@@ -23,12 +23,16 @@
         <input matInput [(ngModel)]="pin" type="password" placeholder="PIN" #pin_field
           [ngModelOptions]="{standalone: true}" (keyup.enter)="login()" />
       </mat-form-field>
+
+      <section id="remember_section" *ngIf="this.login_type == LoginType.default">
+        <mat-checkbox [(ngModel)]="remember" [ngModelOptions]="{standalone: true}" (keyup.enter)="login()">Remember me</mat-checkbox>
+      </section>
     </form>
   </mat-card-content>
   <mat-card-actions align="end">
     <button mat-button (click)="login()">
       <span *ngIf="!logging_in">Login</span>
-      <mat-spinner *ngIf="logging_in" color="accent" [diameter]="16" style="margin: 0 auto"></mat-spinner>
+      <mat-spinner *ngIf="logging_in" color="accent" diameter="16" style="margin: 0 auto"></mat-spinner>
     </button>
     <a mat-button routerLink="/register" *ngIf="this.login_type == LoginType.default">Register</a>
     <button mat-button (click)="logout()" color="warn" *ngIf="this.login_type != LoginType.default">

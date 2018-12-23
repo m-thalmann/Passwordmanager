@@ -39,16 +39,31 @@ export class UserService {
   user: User = new User();
   token: string = null;
 
-  login({user, token, password}): void {
-    localStorage.setItem(TOKEN, token);
-    localStorage.setItem(USER, JSON.stringify(user));
+  login(user: Object, token: string, password: string, remember: boolean): void {
     localStorage.removeItem(PW);
-    this.password = new Md5Pipe().transform(password);
-    this.setUser();
 
-    let bf = new Blowfish(this.password);
-    let test_item = bf.base64Encode(bf.encrypt(TEST_ITEM));
-    localStorage.setItem(TEST_ITEM_KEY, test_item);
+    this.password = new Md5Pipe().transform(password);
+    this.parseUser(user);
+    this.token = token;
+
+    if(remember){
+      localStorage.setItem(TOKEN, token);
+      localStorage.setItem(USER, JSON.stringify(user));
+
+      let bf = new Blowfish(this.password);
+      let test_item = bf.base64Encode(bf.encrypt(TEST_ITEM));
+      localStorage.setItem(TEST_ITEM_KEY, test_item);
+    }
+  }
+
+  parseUser(user: any){
+    try{
+      this.user.id = user.id;
+      this.user.username = user.username;
+      this.user.email = user.email;
+      this.user.active = user.active;
+    }catch(e){
+    }
   }
 
   setUser(){
@@ -59,10 +74,7 @@ export class UserService {
       let user = JSON.parse(_user);
 
       if(user != null){
-        this.user.id = user.id;
-        this.user.username = user.username;
-        this.user.email = user.email;
-        this.user.active = user.active;
+        this.parseUser(user);
       }
 
       if(token != null){
@@ -160,10 +172,7 @@ export class UserService {
   }
 
   isLoggedin() {
-    let token = localStorage.getItem(TOKEN) != null;
-    let user = localStorage.getItem(USER) != null;
-
-    return (token && user && this.password != null);
+    return (this.token != null && this.user != null && this.password != null);
   }
 
   isKnown() {

@@ -10,7 +10,9 @@ import {
   MatInputModule,
   MatCardModule,
   MatProgressSpinnerModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatCheckboxModule,
+  MatTooltipModule
 } from '@angular/material';
 
 import {
@@ -32,7 +34,9 @@ import {
     FormsModule,
     MatCardModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatCheckboxModule,
+    MatTooltipModule,
   ],
 })
 export class MaterialModule { }

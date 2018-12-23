@@ -57,6 +57,30 @@ export class ApiService {
     }
   }
 
+  async logoutId(id: number){
+    try {
+      let ret = await this.http.get(API_URL + 'logout/' + this.user.token + '/' + id).toPromise();
+
+      return ret;
+    } catch (e) {
+      if (e.status == 403) {
+        this.user.logout();
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  async logoutAll(){
+    try {
+      let ret = await this.http.get(API_URL + 'logout_all/' + this.user.token).toPromise();
+
+      return ret;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   async updateSettings(settings: Settings){
     let params = new HttpParams();
 
@@ -76,6 +100,20 @@ export class ApiService {
       if(e.status == 403){
         this.user.logout();
       }else{
+        throw e;
+      }
+    }
+  }
+
+  async getLogins(){
+    try {
+      let ret = await this.http.get(API_URL + 'logins/' + this.user.token).toPromise();
+
+      return ret;
+    } catch (e) {
+      if (e.status == 403) {
+        this.user.logout();
+      } else {
         throw e;
       }
     }

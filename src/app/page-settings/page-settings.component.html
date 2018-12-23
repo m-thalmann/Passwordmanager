@@ -38,6 +38,33 @@
 
     <mat-card>
       <mat-card-header>
+        <mat-icon mat-card-avatar>computer</mat-icon>
+        <mat-card-title>
+          <span class="align-top">Sessions</span>
+          <mat-icon (click)="reloadLogins()" class="align-top pointer" style="margin-left: 10px">refresh</mat-icon>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-progress-spinner color="accent" mode="indeterminate" *ngIf="sessions_loading" class="align-center-margin" diameter="32"></mat-progress-spinner>
+        <mat-list>
+          <mat-list-item *ngFor="let login of sessions | async">
+            <mat-icon matListIcon>public</mat-icon>
+            <h4 matLine>
+              <span class="align-middle">{{ login.last_ip }}</span>
+              <mat-icon *ngIf="login.current" matTooltip="Current Session" id="session_current" class="align-middle" matTooltipPosition="right">trip_origin</mat-icon>
+            </h4>
+            <p matLine> {{ login.last_time | date: 'EEE, dd. LLL yyyy, HH:mm:ss' }} </p>
+            <button mat-icon-button color="warn" (click)="removeLogin(login.id)"><mat-icon>delete</mat-icon></button>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="warn" (click)="removeAllLogins()" [disabled]="settings_changing">Logout from all sessions</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
         <mat-icon mat-card-avatar>security</mat-icon>
         <mat-card-title>
           PIN -
@@ -48,19 +75,21 @@
       <mat-card-content>
         <form>
           <mat-form-field>
-            <input matInput [(ngModel)]="password" type="password" placeholder="Password" #password_field [ngModelOptions]="{standalone: true}" />
+            <input matInput [(ngModel)]="password" type="password" placeholder="Password" #password_field [ngModelOptions]="{standalone: true}" [disabled]="!this.user.isKnown()" />
           </mat-form-field>
           <br>
           <mat-form-field>
-            <input matInput [(ngModel)]="new_pin" type="password" placeholder="New PIN" #new_pin_field [ngModelOptions]="{standalone: true}" />
+            <input matInput [(ngModel)]="new_pin" type="password" placeholder="New PIN" #new_pin_field [ngModelOptions]="{standalone: true}" [disabled]="!this.user.isKnown()" />
           </mat-form-field>
         </form>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button *ngIf="this.user.hasPIN()" color="warn" (click)="remove_pin()" [disabled]="settings_changing">Remove</button>
-        <button mat-button *ngIf="this.user.hasPIN()" color="primary" (click)="change_pin()" [disabled]="settings_changing">Change</button>
+        <button mat-button *ngIf="this.user.hasPIN()" color="warn" (click)="remove_pin()" [disabled]="settings_changing || !this.user.isKnown()">Remove</button>
+        <button mat-button *ngIf="this.user.hasPIN()" color="primary" (click)="change_pin()" [disabled]="settings_changing || !this.user.isKnown()">Change</button>
 
-        <button mat-button *ngIf="!this.user.hasPIN()" color="accent" (click)="change_pin()" [disabled]="settings_changing">Add</button>
+        <button mat-button *ngIf="!this.user.hasPIN()" color="accent" (click)="change_pin()" [disabled]="settings_changing || !this.user.isKnown()">Add</button>
+
+        <mat-icon matTooltip="You need to save your login-data to do this" matTooltipPosition="right" class="align-middle" *ngIf="!this.user.isKnown()">info</mat-icon>
       </mat-card-actions>
     </mat-card>
 
