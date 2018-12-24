@@ -37,6 +37,19 @@ export class ApiService {
     return this.http.post<LoginResult>(API_URL + 'login', params);
   }
 
+  register(username: string, email: string, password: string){
+    let params = new HttpParams()
+      .append('username', username)
+      .append('email', email)
+      .append('password', new Md5Pipe().transform(password));
+
+    return this.http.post<{info: string}>(API_URL + 'register', params);
+  }
+
+  registrationEnabled(){
+    return this.http.get<{value: boolean}>(API_URL + 'registration_enabled');
+  }
+
   async checkAuth(){
     try{
       let ret = await this.http.get(API_URL + 'auth/' + this.user.token).toPromise();

@@ -1,3 +1,31 @@
-<p>
-  page-register works!
-</p>
+<mat-card>
+  <mat-card-header>
+    <a mat-icon-button mat-card-avatar routerLink="/login"><mat-icon>arrow_back</mat-icon></a>
+    <mat-card-title>Passwordmanager</mat-card-title>
+    <mat-card-subtitle>Register</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form>
+      <mat-form-field>
+        <input matInput [(ngModel)]="username" type="text" placeholder="Username" #username_field [ngModelOptions]="{standalone: true}"
+          (keyup.enter)="register()" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="email" type="email" placeholder="E-Mail" #email_field [ngModelOptions]="{standalone: true}"
+          (keyup.enter)="register()" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="password" type="password" placeholder="Password" #password_field [ngModelOptions]="{standalone: true}"
+          (keyup.enter)="register()" />
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-button (click)="register()" style="height: 36px">
+      <span *ngIf="!registering">Register</span>
+      <mat-spinner *ngIf="registering" color="accent" diameter="16" style="margin: 0 auto; display: block"></mat-spinner>
+    </button>
+  </mat-card-actions>
+</mat-card>

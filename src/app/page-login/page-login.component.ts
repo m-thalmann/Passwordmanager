@@ -4,6 +4,8 @@ import { ApiService } from '../api.service';
 import { MatSnackBar } from '@angular/material';
 import { UserService } from '../user.service';
 
+import { Config } from '../../config/config';
+
 enum LoginType{
   default,
   pin,
@@ -16,6 +18,7 @@ enum LoginType{
   styleUrls: ['./page-login.component.scss']
 })
 export class PageLoginComponent {
+  Config: Config = Config;
 
   remember: boolean = false;
 
@@ -29,6 +32,8 @@ export class PageLoginComponent {
   login_type: LoginType = LoginType.default;
 
   LoginType = LoginType;
+
+  registration_enabled: boolean = false;
 
   constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, public snackBar: MatSnackBar, private user: UserService) { 
     if(user.isLoggedin()){
@@ -47,6 +52,14 @@ export class PageLoginComponent {
       this.login_type = LoginType.pin;
     }else if(user.isKnown() && user.hasTest()){
       this.login_type = LoginType.password;
+    }
+
+    if(Config.registration_enabled){
+      this.api.registrationEnabled().subscribe(
+        result => {
+          this.registration_enabled = result.value;
+        }
+      );
     }
   }
 

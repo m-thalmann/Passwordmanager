@@ -30,11 +30,11 @@
     </form>
   </mat-card-content>
   <mat-card-actions align="end">
-    <button mat-button (click)="login()">
+    <button mat-button (click)="login()" style="height: 36px">
       <span *ngIf="!logging_in">Login</span>
       <mat-spinner *ngIf="logging_in" color="accent" diameter="16" style="margin: 0 auto"></mat-spinner>
     </button>
-    <a mat-button routerLink="/register" *ngIf="this.login_type == LoginType.default">Register</a>
+    <a mat-button [routerLink]="this.registration_enabled ? '/register' : null" *ngIf="this.login_type == LoginType.default && Config.registration_enabled" [disabled]="!this.registration_enabled" matTooltip="Registration is disabled on this server" [matTooltipDisabled]="this.registration_enabled" matTooltipPosition="above">Register</a>
     <button mat-button (click)="logout()" color="warn" *ngIf="this.login_type != LoginType.default">
       <span>Logout</span>
     </button>
