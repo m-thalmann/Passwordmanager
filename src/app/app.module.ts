@@ -20,6 +20,7 @@ import { TagIconPipe } from './tag-icon.pipe';
 import { WordPipe } from './word.pipe';
 import { PasswordListComponent } from './password-list/password-list.component';
 import { PasswordOverlayComponent } from './password-overlay/password-overlay.component';
+import { TagsListComponent } from './page-tags/tags-list/tags-list.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { PasswordOverlayComponent } from './password-overlay/password-overlay.co
     WordPipe,
     PasswordListComponent,
     PasswordOverlayComponent,
+    TagsListComponent,
   ],
   imports: [
     BrowserModule,

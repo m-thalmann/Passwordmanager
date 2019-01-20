@@ -12,12 +12,13 @@ interface Tag{
   styleUrls: ['./page-tags.component.scss']
 })
 export class PageTagsComponent implements OnInit {
-  tags: Tag[] = [];
+  tags: Tag[] = null;
   
   constructor(private passwords: PasswordsService) { }
   
   ngOnInit() {
     this.passwords.unlock().then(() => {
+      this.tags = [];
       this.passwords.get().forEach(password => {
         password.tags.forEach(tag => {
           let pos = this.tags.map(el => el.name).indexOf(tag);

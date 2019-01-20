@@ -1,9 +1,12 @@
 <main-nav>
+  <h3>Tags</h3>
   <mat-nav-list>
-    <mat-list-item *ngFor="let tag of tags" [routerLink]="'/tags/' + tag">
+    <mat-list-item *ngFor="let tag of tags" [routerLink]="'/tags/' + tag.name">
       <i [class]="tag.name | tagIcon" mat-list-icon></i>
       <span mat-line>{{ tag.name | word }}</span>
-      <span class="tag_amount">{{ tag.amount }}</span>
+      <div class="tag_amount">{{ tag.amount }}</div>
     </mat-list-item>
   </mat-nav-list>
+
+  <mat-spinner *ngIf="tags == null" color="accent" style="margin: 1em auto" diameter="30"></mat-spinner>
 </main-nav>
