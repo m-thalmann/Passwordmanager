@@ -24,7 +24,7 @@ export class PageSettingsComponent {
     this.sessions_loading = false;
   });
 
-  constructor(private user: UserService, private api: ApiService, public snackBar: MatSnackBar) { }
+  constructor(public user: UserService, private api: ApiService, public snackBar: MatSnackBar) { }
 
   checkPW(){
     let pw = new Md5Pipe().transform(this.password);
@@ -64,6 +64,7 @@ export class PageSettingsComponent {
   }
 
   async change_settings(){
+    // TODO: show confirm first, that all data on all sessions will be removed
     if(this.checkPW()){
       try{
         this.settings_changing = true;

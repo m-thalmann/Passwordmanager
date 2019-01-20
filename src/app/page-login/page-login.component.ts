@@ -18,7 +18,7 @@ enum LoginType{
   styleUrls: ['./page-login.component.scss']
 })
 export class PageLoginComponent {
-  Config: Config = Config;
+  Config = Config;
 
   remember: boolean = false;
 

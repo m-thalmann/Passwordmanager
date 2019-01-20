@@ -56,7 +56,7 @@ export class MainNavComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, public dialog: MatDialog, private user: UserService, private api: ApiService, private snackBar: MatSnackBar) {
+  constructor(private breakpointObserver: BreakpointObserver, public dialog: MatDialog, public user: UserService, private api: ApiService, private snackBar: MatSnackBar) {
   }
 
 }

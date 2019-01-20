@@ -7,7 +7,7 @@ import { UserService } from './user.service';
 
 const API_URL = Config.api_url;
 
-interface LoginResult{
+export interface LoginResult{
   user: {
     id: number,
     username: string,
@@ -17,9 +17,17 @@ interface LoginResult{
   token: string
 }
 
-interface Settings{
+export interface Settings{
   email?: string,
   password?: string
+}
+
+export interface Password{
+  id: number,
+  enc_key: string,
+  data: string,
+  last_changed: string,
+  tags: string[]
 }
 
 @Injectable({
@@ -130,5 +138,51 @@ export class ApiService {
         throw e;
       }
     }
+  }
+
+  async loadPasswords(){
+    try {
+      let ret = await this.http.get<Password[]>(API_URL + 'load/' + this.user.token).toPromise();
+
+      return ret;
+    } catch (e) {
+      if (e.status == 403) {
+        this.user.logout();
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  async loadHeaders(id?: number){
+    try {
+      let ret = await this.http.get(API_URL + 'load/headers/' + this.user.token + (id ? '/' + id : '')).toPromise();
+
+      return ret;
+    } catch (e) {
+      if (e.status == 403) {
+        this.user.logout();
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  async deletePassword(id: number){
+    try {
+      let ret = await this.http.delete(API_URL + 'delete/' + this.user.token + '/' + id).toPromise();
+
+      return ret;
+    } catch (e) {
+      if (e.status == 403) {
+        this.user.logout();
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  async updatePasswords(){
+    // TODO: implement
   }
 }

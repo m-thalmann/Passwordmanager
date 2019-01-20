@@ -16,6 +16,10 @@ import { PageLoginComponent } from './page-login/page-login.component';
 import { PageRegisterComponent } from './page-register/page-register.component';
 import { HttpClientModule } from '@angular/common/http';
 import { Md5Pipe } from './md5.pipe';
+import { TagIconPipe } from './tag-icon.pipe';
+import { WordPipe } from './word.pipe';
+import { PasswordListComponent } from './password-list/password-list.component';
+import { PasswordOverlayComponent } from './password-overlay/password-overlay.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +33,10 @@ import { Md5Pipe } from './md5.pipe';
     PageLoginComponent,
     PageRegisterComponent,
     Md5Pipe,
+    TagIconPipe,
+    WordPipe,
+    PasswordListComponent,
+    PasswordOverlayComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,7 +47,7 @@ import { Md5Pipe } from './md5.pipe';
     LayoutModule,
   ],
   providers: [],
-  entryComponents:[AboutDialogComponent],
+  entryComponents:[AboutDialogComponent, PasswordOverlayComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
