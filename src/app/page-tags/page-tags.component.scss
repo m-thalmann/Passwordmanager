@@ -1,0 +1,20 @@
+@import '../../variables.scss';
+
+i[mat-list-icon]{
+    margin-right: 1em;
+}
+
+.tag_amount{
+    background-color: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 50%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    display: inline-block;
+}

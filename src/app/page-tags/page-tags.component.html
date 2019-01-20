@@ -1,5 +1,9 @@
 <main-nav>
-  <p>
-    page-tags works!
-  </p>
+  <mat-nav-list>
+    <mat-list-item *ngFor="let tag of tags" [routerLink]="'/tags/' + tag">
+      <i [class]="tag.name | tagIcon" mat-list-icon></i>
+      <span mat-line>{{ tag.name | word }}</span>
+      <span class="tag_amount">{{ tag.amount }}</span>
+    </mat-list-item>
+  </mat-nav-list>
 </main-nav>
