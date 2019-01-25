@@ -21,6 +21,7 @@ import { WordPipe } from './word.pipe';
 import { PasswordListComponent } from './password-list/password-list.component';
 import { PasswordOverlayComponent } from './password-overlay/password-overlay.component';
 import { TagsListComponent } from './page-tags/tags-list/tags-list.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { TagsListComponent } from './page-tags/tags-list/tags-list.component';
     BrowserAnimationsModule,
     MaterialModule,
     LayoutModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   entryComponents:[AboutDialogComponent, PasswordOverlayComponent],

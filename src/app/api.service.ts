@@ -22,10 +22,27 @@ export interface Settings{
   password?: string
 }
 
-export interface Password{
+export interface PasswordAPI{
   id: number,
   enc_key: string,
   data: string,
+  last_changed: string,
+  tags: string[]
+}
+
+export interface Password{
+  id: number,
+  enc_key: string,
+  data: {
+    name?: string,
+    username?: string,
+    password?: string,
+    domain?: string,
+    additional_data?: {
+      name: string,
+      value: string
+    }[]
+  },
   last_changed: string,
   tags: string[]
 }
@@ -142,7 +159,7 @@ export class ApiService {
 
   async loadPasswords(){
     try {
-      let ret = await this.http.get<Password[]>(API_URL + 'load/' + this.user.token).toPromise();
+      let ret = await this.http.get<PasswordAPI[]>(API_URL + 'load/' + this.user.token).toPromise();
 
       return ret;
     } catch (e) {

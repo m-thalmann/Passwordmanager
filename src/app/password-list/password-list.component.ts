@@ -34,7 +34,8 @@ export class PasswordListComponent {
 
   showPassword(password: Password){
     this.dialog.open(PasswordOverlayComponent, {
-      width: '500px'
+      width: '500px',
+      data: { password: password }
     });
   }
 

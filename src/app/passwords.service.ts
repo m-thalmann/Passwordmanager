@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
+import { ApiService, Password, PasswordAPI } from './api.service';
 import { UserService } from './user.service';
 import { Blowfish } from 'javascript-blowfish';
 import { Md5Pipe } from './md5.pipe';
-
-interface Password{
-  id: number,
-  enc_key: string,
-  data: string,
-  last_changed: string,
-  tags: string[]
-}
 
 @Injectable({
   providedIn: 'root'
@@ -78,7 +70,7 @@ export class PasswordsService {
     return this.passwords != null;
   }
 
-  private decrypt(passwords: Password[]){
+  private decrypt(passwords: PasswordAPI[]){
     if(this.decrypted)
       return;
 
@@ -91,27 +83,34 @@ export class PasswordsService {
 
       el.data = JSON.parse(bf.trimZeros(bf.decrypt(bf.base64Decode(el.data))));
 
-      return el;
+      return el as Password;
     });
 
     this.passwords = ret;
   }
 
   private encrypt(){
+    // TODO: test
     this.check_decrypted();
 
     return this.passwords.map(el => {
-      el = JSON.parse(JSON.stringify(el));
+      let element: PasswordAPI = {
+        id: el.id,
+        enc_key: el.enc_key,
+        last_changed: el.last_changed,
+        data: null,
+        tags: el.tags
+      };
 
       let bf = new Blowfish(el.enc_key);
 
-      el.data = bf.base64Encode(bf.encrypt(JSON.stringify(el.data)));
+      element.data = bf.base64Encode(bf.encrypt(JSON.stringify(el.data)));
       
       bf = new Blowfish(this.user.password);
       
-      el.enc_key = bf.base64Encode(bf.encrypt(el.enc_key));
+      element.enc_key = bf.base64Encode(bf.encrypt(el.enc_key));
 
-      return el;
+      return element;
     });
   }
 
