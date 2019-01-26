@@ -4,7 +4,10 @@
     <mat-list-item *ngFor="let tag of tags" [routerLink]="'/tags/' + tag.name">
       <i [class]="tag.name | tagIcon" mat-list-icon></i>
       <span mat-line>{{ tag.name | word }}</span>
-      <div class="tag_amount">{{ tag.amount }}</div>
+      
+      <mat-chip-list>
+        <mat-chip matTooltip="Amount" matTooltipPosition="before">{{ tag.amount }}</mat-chip>
+      </mat-chip-list>
     </mat-list-item>
   </mat-nav-list>
 
