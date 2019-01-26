@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ApiService, Password, PasswordAPI } from './api.service';
+import { ApiService, Password, PasswordDexie } from './api.service';
 import { UserService } from './user.service';
 import { Blowfish } from 'javascript-blowfish';
 import { Md5Pipe } from './md5.pipe';
+import { DexieService } from './dexie.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,11 +11,23 @@ import { Md5Pipe } from './md5.pipe';
 export class PasswordsService {
   passwords: Password[] = null;
 
-  constructor(private api: ApiService, private user: UserService) { }
+  constructor(private api: ApiService, private user: UserService, private dexie: DexieService) { }
 
   async unlock(){
-    if(!this.decrypted)
-      this.decrypt(await this.api.loadPasswords());
+    
+    if(!this.decrypted){
+      // TODO: check settings if always update / now update needed / online etc
+      let passwords: PasswordDexie[] = null;
+      if(false){
+        passwords = await this.api.loadPasswords();
+        
+        await this.dexie.updateCollection(passwords);
+      }else{
+        passwords = await this.dexie.getAll();
+      }
+
+      this.decrypt(passwords);
+    }
   }
 
   get(){
@@ -70,20 +83,28 @@ export class PasswordsService {
     return this.passwords != null;
   }
 
-  private decrypt(passwords: PasswordAPI[]){
+  private decrypt(passwords: PasswordDexie[]){
     if(this.decrypted)
       return;
 
     let ret = passwords.map(el => {
+      let element: Password = {
+        id: el.id,
+        enc_key: null,
+        last_changed: el.last_changed,
+        data: null,
+        tags: el.tags
+      };
+
       let bf = new Blowfish(this.user.password);
 
-      el.enc_key = bf.trimZeros(bf.decrypt(bf.base64Decode(el.enc_key)));
+      element.enc_key = bf.trimZeros(bf.decrypt(bf.base64Decode(el.enc_key)));
 
-      bf = new Blowfish(el.enc_key);
+      bf = new Blowfish(element.enc_key);
 
-      el.data = JSON.parse(bf.trimZeros(bf.decrypt(bf.base64Decode(el.data))));
+      element.data = JSON.parse(bf.trimZeros(bf.decrypt(bf.base64Decode(el.data))));
 
-      return el as Password;
+      return element;
     });
 
     this.passwords = ret;
@@ -94,13 +115,17 @@ export class PasswordsService {
     this.check_decrypted();
 
     return this.passwords.map(el => {
-      let element: PasswordAPI = {
+      let element: PasswordDexie = {
         id: el.id,
-        enc_key: el.enc_key,
+        enc_key: null,
         last_changed: el.last_changed,
         data: null,
         tags: el.tags
       };
+
+      if(el._id){
+        element._id = el._id;
+      }
 
       let bf = new Blowfish(el.enc_key);
 
@@ -112,10 +137,6 @@ export class PasswordsService {
 
       return element;
     });
-  }
-
-  private get_storage(){
-
   }
 
   private padZero(str: string, length: number, before: boolean = true){

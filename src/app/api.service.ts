@@ -30,7 +30,12 @@ export interface PasswordAPI{
   tags: string[]
 }
 
+export interface PasswordDexie extends PasswordAPI{
+  _id?: number
+}
+
 export interface Password{
+  _id?: number,
   id: number,
   enc_key: string,
   data: {
