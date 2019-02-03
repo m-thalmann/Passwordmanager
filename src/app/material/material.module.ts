@@ -13,7 +13,8 @@ import {
   MatSnackBarModule,
   MatCheckboxModule,
   MatTooltipModule,
-  MatChipsModule
+  MatChipsModule,
+  MatAutocompleteModule
 } from '@angular/material';
 
 import {
@@ -38,7 +39,8 @@ import {
     MatSnackBarModule,
     MatCheckboxModule,
     MatTooltipModule,
-    MatChipsModule
+    MatChipsModule,
+    MatAutocompleteModule
   ],
 })
 export class MaterialModule { }

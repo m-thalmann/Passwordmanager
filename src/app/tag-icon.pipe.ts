@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'tagIcon'
 })
 export class TagIconPipe implements PipeTransform {
-  private known = {
+  static known = {
     "mail": "fas fa-envelope",
     "email": "fas fa-envelope",
 
@@ -61,7 +61,7 @@ export class TagIconPipe implements PipeTransform {
   transform(value: string) {
     value = value.toLowerCase();
 
-    return this.known[value] ? this.known[value] : "fas fa-tag";
+    return TagIconPipe.known[value] ? TagIconPipe.known[value] : "fas fa-tag";
   }
 
 }

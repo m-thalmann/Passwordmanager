@@ -1,9 +1,13 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { Password } from '../api.service';
 import { PasswordsService } from '../passwords.service';
-import { FormGroup, FormBuilder, FormArray, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
+import { TagIconPipe } from '../tag-icon.pipe';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
+import { deepEquals, trimObject } from '../functions';
 
 @Component({
   selector: 'app-password-overlay',
@@ -16,6 +20,14 @@ export class PasswordOverlayComponent implements OnInit {
 
   form: FormGroup;
 
+  tags_all: string[] = Object.keys(TagIconPipe.known).map(tag => tag.toLowerCase());
+  tagsCtrl = new FormControl();
+  filteredTags: Observable<string[]>;
+  tags: string[] = [];
+
+  @ViewChild('tagsInput') tagInput: ElementRef<HTMLInputElement>;
+  @ViewChild('autocomplete_tags') matAutocomplete: MatAutocomplete;
+
   private default_data: Password = null;
 
   constructor(public dialogRef: MatDialogRef<AboutDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any, public password: PasswordsService, private fb: FormBuilder) { }
@@ -27,11 +39,11 @@ export class PasswordOverlayComponent implements OnInit {
       }
     });
 
-    if(this.data.edit){
+    if(this.data && this.data.edit){
       this.edit_mode = this.data.edit;
     }
 
-    if(this.data.password){
+    if(this.data && this.data.password){
       this.pword = this.data.password;
     }else{
       this.edit_mode = true;
@@ -58,6 +70,10 @@ export class PasswordOverlayComponent implements OnInit {
 
     this.default_data = JSON.parse(JSON.stringify(this.pword));
 
+    this.filteredTags = this.tagsCtrl.valueChanges.pipe(
+      startWith(null),
+      map((tag: string | null) => tag ? this._filter_tag(tag) : this.tags_all.slice()));
+
     this.setFormData();
   }
 
@@ -76,20 +92,14 @@ export class PasswordOverlayComponent implements OnInit {
         this.addAdditional(el.name, el.value);
       });
     }
+
+    this.tags = this.default_data.tags.map(tag => tag.toLowerCase());
   }
 
   private get changed(){
-    let value = this.form.value;
-    // TODO: implement
-
-    // value = value.filter(val => val && val.trim().length > 0);
+    let value: Password = JSON.parse(JSON.stringify(this.form.value));
     
-    // return (Object.keys(value).every(key => 
-    //   this.default_data.data[key] && this.default_data.data[key] == value[key]
-    // ) && Object.keys(this.default_data.data).every(key =>
-    //   value[key] && value[key] == this.default_data.data[key]  
-    // ));
-    return true;
+    return !deepEquals(trimObject(value), trimObject(this.default_data.data)) || !deepEquals(this.tags, this.default_data.tags);
   }
 
   get additional(){
@@ -105,7 +115,7 @@ export class PasswordOverlayComponent implements OnInit {
     this.additional.push(additional_data);
   }
 
-  removeAdditional(i){
+  removeAdditional(i: number){
     this.additional.removeAt(i);
   }
 
@@ -116,14 +126,64 @@ export class PasswordOverlayComponent implements OnInit {
   toggleEdit(save: boolean = true){
     if(this.edit_mode){
       if(save){
-        // TODO: save after check that unsaved changes exist
-        console.log(this.changed);
+        if(this.changed){
+          this.save();
+        }
       }else{
         this.setFormData();
       }
     }
     
     this.edit_mode = !this.edit_mode;
+  }
+
+  save(){
+    this.default_data.data = JSON.parse(JSON.stringify(trimObject(this.form.value)));
+    this.default_data.tags = this.tags.slice();
+    this.password.update(this.default_data); // TODO: set _id of password
+  }
+
+  add_tag(event: MatChipInputEvent): void {
+    if (!this.matAutocomplete.isOpen) {
+      const input = event.input;
+      const value = event.value;
+
+      if ((value || '').trim()) {
+        let tag = value.trim();
+
+        if(this.tags.indexOf(tag.toLowerCase()) == -1){
+          this.tags.push(tag.toLowerCase());
+        }
+      }
+
+      if (input) {
+        input.value = '';
+      }
+
+      this.tagsCtrl.setValue(null);
+    }
+  }
+
+  remove_tag(tag: string): void {
+    const index = this.tags.indexOf(tag.toLowerCase());
+
+    if (index >= 0) {
+      this.tags.splice(index, 1);
+    }
+  }
+
+  selected_tag(event: MatAutocompleteSelectedEvent): void {
+    if(this.tags.indexOf(event.option.viewValue.toLowerCase()) == -1){
+      this.tags.push(event.option.viewValue.toLowerCase());
+    }
+    this.tagInput.nativeElement.value = '';
+    this.tagsCtrl.setValue(null);
+  }
+
+  private _filter_tag(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.tags_all.filter(tag => tag.toLowerCase().indexOf(filterValue) === 0 && this.tags.indexOf(tag.toLowerCase()) == -1);
   }
 
 }

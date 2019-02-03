@@ -6,6 +6,7 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { UserService } from '../user.service';
 import { ApiService } from '../api.service';
+import { PasswordOverlayComponent } from '../password-overlay/password-overlay.component';
 
 @Component({
   selector: 'main-nav',
@@ -49,6 +50,12 @@ export class MainNavComponent {
 
       // TODO: search
     }
+  }
+
+  addPW(){
+    this.dialog.open(PasswordOverlayComponent, {
+      width: '500px',
+    });
   }
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)

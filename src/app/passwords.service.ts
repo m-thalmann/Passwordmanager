@@ -14,11 +14,11 @@ export class PasswordsService {
   constructor(private api: ApiService, private user: UserService, private dexie: DexieService) { }
 
   async unlock(){
-    
     if(!this.decrypted){
-      // TODO: check settings if always update / now update needed / online etc
       let passwords: PasswordDexie[] = null;
-      if(false){
+      
+      // TODO: check settings if always update / now update needed
+      if(navigator.onLine && ((passwords = await this.dexie.getAll()).length == 0)){
         passwords = await this.api.loadPasswords();
         
         await this.dexie.updateCollection(passwords);
@@ -26,7 +26,7 @@ export class PasswordsService {
         passwords = await this.dexie.getAll();
       }
 
-      this.decrypt(passwords);
+      this.passwords = this.decryptCollection(passwords);
     }
   }
 
@@ -38,7 +38,7 @@ export class PasswordsService {
 
   async save(){
     try{
-      let ret = this.encrypt();
+      let ret = this.encryptCollection(this.passwords);
 
       console.log("save: ", ret);
     }catch(e){
@@ -46,7 +46,7 @@ export class PasswordsService {
     }
   }
 
-  add(data: any, tags: string[] = []){
+  update(password: Password){
     this.check_decrypted();
 
     let today: Date = new Date();
@@ -62,13 +62,31 @@ export class PasswordsService {
     let date: string = this.padZero(year.toString(), 2) + '-' + this.padZero(month.toString(), 2) + '-' + this.padZero(day.toString(), 2)
                           + ' ' + this.padZero(hours.toString(), 2) + ':' + this.padZero(minutes.toString(), 2) + ':' + this.padZero(seconds.toString(), 2);
 
-    this.passwords.push({
-      id: -1,
-      enc_key: new Md5Pipe().transform((Math.pow(Math.random() * 100, 10)).toString() + date),
-      data: data,
-      last_changed: date,
-      tags: tags
-    });
+    password.enc_key = new Md5Pipe().transform((Math.pow(Math.random() * 100, 10)).toString() + date);
+    password.last_changed = date;
+
+    let index = password.id != -1 ? this.passwords.map(pw => pw.id).indexOf(password.id) : -1;
+
+    if(index >= 0){
+      this.passwords[index] = password;
+    }else{ // TODO: 
+      index = password._id ? this.passwords.map(pw => pw._id).indexOf(password._id): -1;
+
+      if(index >= 0){
+        this.passwords[index] = password;
+      }else{
+        this.passwords.push(password);
+      }
+    }
+
+    return this.dexie.update(this.encrypt(password));
+    // TODO: check if always sync --> then sync
+  }
+
+  remove(password: Password){
+    // TODO: 
+    // TODO: save db
+    // TODO: check if always sync --> then sync
   }
 
   private check_decrypted(should_be: boolean = true){
@@ -83,60 +101,56 @@ export class PasswordsService {
     return this.passwords != null;
   }
 
-  private decrypt(passwords: PasswordDexie[]){
-    if(this.decrypted)
-      return;
-
-    let ret = passwords.map(el => {
-      let element: Password = {
-        id: el.id,
-        enc_key: null,
-        last_changed: el.last_changed,
-        data: null,
-        tags: el.tags
-      };
-
-      let bf = new Blowfish(this.user.password);
-
-      element.enc_key = bf.trimZeros(bf.decrypt(bf.base64Decode(el.enc_key)));
-
-      bf = new Blowfish(element.enc_key);
-
-      element.data = JSON.parse(bf.trimZeros(bf.decrypt(bf.base64Decode(el.data))));
-
-      return element;
-    });
-
-    this.passwords = ret;
+  private decryptCollection(passwords: PasswordDexie[]){
+    return passwords.map(el => this.decrypt(el));
   }
 
-  private encrypt(){
-    // TODO: test
-    this.check_decrypted();
+  private decrypt(password: PasswordDexie){
+    let element: Password = {
+      id: password.id,
+      enc_key: null,
+      last_changed: password.last_changed,
+      data: null,
+      tags: password.tags
+    };
 
-    return this.passwords.map(el => {
-      let element: PasswordDexie = {
-        id: el.id,
-        enc_key: null,
-        last_changed: el.last_changed,
-        data: null,
-        tags: el.tags
-      };
+    let bf = new Blowfish(this.user.password);
 
-      if(el._id){
-        element._id = el._id;
-      }
+    element.enc_key = bf.trimZeros(bf.decrypt(bf.base64Decode(password.enc_key)));
 
-      let bf = new Blowfish(el.enc_key);
+    bf = new Blowfish(element.enc_key);
 
-      element.data = bf.base64Encode(bf.encrypt(JSON.stringify(el.data)));
-      
-      bf = new Blowfish(this.user.password);
-      
-      element.enc_key = bf.base64Encode(bf.encrypt(el.enc_key));
+    element.data = JSON.parse(bf.trimZeros(bf.decrypt(bf.base64Decode(password.data))));
 
-      return element;
-    });
+    return element;
+  }
+
+  private encryptCollection(passwords: Password[]) {
+    return passwords.map(el => this.encrypt(el));
+  }
+
+  private encrypt(password: Password){
+    let element: PasswordDexie = {
+      id: password.id,
+      enc_key: null,
+      last_changed: password.last_changed,
+      data: null,
+      tags: password.tags
+    };
+
+    if (password._id) {
+      element._id = password._id;
+    }
+
+    let bf = new Blowfish(password.enc_key);
+
+    element.data = bf.base64Encode(bf.encrypt(JSON.stringify(password.data)));
+
+    bf = new Blowfish(this.user.password);
+
+    element.enc_key = bf.base64Encode(bf.encrypt(password.enc_key));
+
+    return element;
   }
 
   private padZero(str: string, length: number, before: boolean = true){

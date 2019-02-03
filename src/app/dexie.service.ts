@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Dexie from 'dexie';
-import { PasswordDexie } from './api.service';
+import { PasswordDexie, ApiService } from './api.service';
 
 const DB_NAME = 'Passwordmanager';
 
@@ -10,7 +10,7 @@ const DB_NAME = 'Passwordmanager';
 export class DexieService extends Dexie {
   private passwords: Dexie.Table<PasswordDexie, number>;
 
-  private constructor() {
+  private constructor(private api: ApiService) {
     super(DB_NAME);
 
     this.version(1).stores({
@@ -48,6 +48,7 @@ export class DexieService extends Dexie {
    * @returns _id of entry in db
    */
   async update(password: PasswordDexie){
+    // TODO: update only if update date is newer
     let pw_id = password.id != -1 ? await this.passwords.where('id').equals(password.id).toArray() : [];
 
     if(pw_id.length == 1){
