@@ -16,6 +16,7 @@ import { deepEquals, trimObject } from '../functions';
 })
 export class PasswordOverlayComponent implements OnInit {
   edit_mode: boolean = false;
+  saving: boolean = false;
   pword: Password = null;
 
   form: FormGroup;
@@ -123,11 +124,13 @@ export class PasswordOverlayComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  toggleEdit(save: boolean = true){
+  async toggleEdit(save: boolean = true){
     if(this.edit_mode){
       if(save){
         if(this.changed){
-          this.save();
+          this.saving = true;
+          await this.save();
+          this.saving = false;
         }
       }else{
         this.setFormData();
@@ -137,10 +140,10 @@ export class PasswordOverlayComponent implements OnInit {
     this.edit_mode = !this.edit_mode;
   }
 
-  save(){
+  async save(){
     this.default_data.data = JSON.parse(JSON.stringify(trimObject(this.form.value)));
     this.default_data.tags = this.tags.slice();
-    this.password.update(this.default_data); // TODO: set _id of password
+    this.default_data._id = await this.password.update(this.default_data);
   }
 
   add_tag(event: MatChipInputEvent): void {

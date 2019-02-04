@@ -38,9 +38,11 @@ export class PasswordsService {
 
   async save(){
     try{
-      let ret = this.encryptCollection(this.passwords);
+      let ret = this.encryptCollection(this.passwords).map(pw => {
+        return this.dexie.update(pw);
+      });
 
-      console.log("save: ", ret);
+      await Promise.all(ret);
     }catch(e){
       throw e;
     }
@@ -113,6 +115,10 @@ export class PasswordsService {
       data: null,
       tags: password.tags
     };
+
+    if(password._id) {
+      element._id = password._id;
+    }
 
     let bf = new Blowfish(this.user.password);
 

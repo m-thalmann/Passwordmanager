@@ -8,7 +8,7 @@ export class TagIconPipe implements PipeTransform {
     "mail": "fas fa-envelope",
     "email": "fas fa-envelope",
 
-    "adobe": "fab fa-adobe",
+    "adobe": "fab fa-adobe", // TODO: not working
     "amazon": "fab fa-amazon",
     "apple": "fab fa-apple",
     "bitbucket": "fab fa-bitbucket",
