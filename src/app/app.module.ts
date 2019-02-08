@@ -22,6 +22,7 @@ import { PasswordListComponent } from './password-list/password-list.component';
 import { PasswordOverlayComponent } from './password-overlay/password-overlay.component';
 import { TagsListComponent } from './page-tags/tags-list/tags-list.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ConfirmOverlayComponent } from './confirm-overlay/confirm-overlay.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     PasswordListComponent,
     PasswordOverlayComponent,
     TagsListComponent,
+    ConfirmOverlayComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,7 +53,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
   ],
   providers: [],
-  entryComponents:[AboutDialogComponent, PasswordOverlayComponent],
+  entryComponents:[ AboutDialogComponent, PasswordOverlayComponent, ConfirmOverlayComponent ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent, MatDialog } from '@angular/material';
 import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { Password } from '../api.service';
 import { PasswordsService } from '../passwords.service';
@@ -8,6 +8,7 @@ import { TagIconPipe } from '../tag-icon.pipe';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { deepEquals, trimObject } from '../functions';
+import { ConfirmOverlayComponent } from '../confirm-overlay/confirm-overlay.component';
 
 @Component({
   selector: 'app-password-overlay',
@@ -31,7 +32,8 @@ export class PasswordOverlayComponent implements OnInit {
 
   private default_data: Password = null;
 
-  constructor(public dialogRef: MatDialogRef<AboutDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any, public password: PasswordsService, private fb: FormBuilder) { }
+  constructor(public dialogRef: MatDialogRef<AboutDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any, public password: PasswordsService,
+    private fb: FormBuilder, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.dialogRef.beforeClose().subscribe(() => {
@@ -187,6 +189,16 @@ export class PasswordOverlayComponent implements OnInit {
     const filterValue = value.toLowerCase();
 
     return this.tags_all.filter(tag => tag.toLowerCase().indexOf(filterValue) === 0 && this.tags.indexOf(tag.toLowerCase()) == -1);
+  }
+
+  remove(){
+    this.dialog.open(ConfirmOverlayComponent, {
+      data: { title: 'Warning', message: 'Do you really want to delete this password?', critical: true }
+    }).afterClosed().subscribe(ret => {
+      if(ret === true){
+        // TODO: 
+      }
+    })
   }
 
 }

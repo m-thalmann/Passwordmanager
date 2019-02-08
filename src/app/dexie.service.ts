@@ -48,20 +48,33 @@ export class DexieService extends Dexie {
    * @returns _id of entry in db
    */
   async update(password: PasswordDexie){
-    // TODO: update only if update date is newer
     let pw_id = password.id != -1 ? await this.passwords.where('id').equals(password.id).toArray() : [];
 
+    let changed = new Date(password.last_changed).valueOf();
+
     if(pw_id.length == 1){
+      if(new Date(pw_id[0].last_changed).valueOf() > changed){
+        return pw_id[0]._id;
+      }
+
       password._id = pw_id[0]._id;
 
       await this.passwords.where('id').equals(password.id).modify(password);
 
       return pw_id[0]._id;
-    }else if(password._id && (await this.passwords.where('_id').equals(password._id).count()) > 0){
-      await this.passwords.where('_id').equals(password._id).modify(password);
-      return password._id;
     }else{
-      return await this.passwords.add(password);
+      let pw__id = password._id ? await this.passwords.where('_id').equals(password._id).toArray() : [];
+
+      if(pw__id.length == 1){
+        if(new Date(pw__id[0].last_changed).valueOf() > changed){
+          return pw__id[0]._id;
+        }
+
+        await this.passwords.where('_id').equals(password._id).modify(password);
+        return password._id;
+      }else{
+        return await this.passwords.add(password);
+      }
     }
   }
 

@@ -53,9 +53,7 @@ export class MainNavComponent {
   }
 
   addPW(){
-    this.dialog.open(PasswordOverlayComponent, {
-      width: '500px',
-    });
+    this.dialog.open(PasswordOverlayComponent);
   }
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
