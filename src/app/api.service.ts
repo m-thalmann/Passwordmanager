@@ -204,7 +204,26 @@ export class ApiService {
     }
   }
 
-  async updatePasswords(){
-    // TODO: implement
+  async updatePasswords(passwords: PasswordAPI[]){
+    try {
+      let params = new HttpParams()
+        .append('data', JSON.stringify(passwords));
+
+      let ret = await this.http.post(API_URL + 'update/' + this.user.token, params).toPromise();
+
+      // TODO: wait for answer and set id's
+
+      return ret;
+    } catch (e) {
+      if (e.status == 403) {
+        this.user.logout();
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  async updatePassword(password: PasswordAPI){
+    return await this.updatePasswords([password]);
   }
 }

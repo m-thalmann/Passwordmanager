@@ -10,7 +10,7 @@ const DB_NAME = 'Passwordmanager';
 export class DexieService extends Dexie {
   private passwords: Dexie.Table<PasswordDexie, number>;
 
-  private constructor(private api: ApiService) {
+  private constructor() {
     super(DB_NAME);
 
     this.version(1).stores({

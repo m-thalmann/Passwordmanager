@@ -71,7 +71,7 @@ export class PasswordsService {
 
     if(index >= 0){
       this.passwords[index] = password;
-    }else{ // TODO: 
+    }else{
       index = password._id ? this.passwords.map(pw => pw._id).indexOf(password._id): -1;
 
       if(index >= 0){
@@ -81,12 +81,18 @@ export class PasswordsService {
       }
     }
 
-    return this.dexie.update(this.encrypt(password));
-    // TODO: check if always sync --> then sync
+    let pw = this.encrypt(password);
+
+    // TODO: check if sync
+    if(true){
+      this.api.updatePassword(pw);
+    }
+
+    return this.dexie.update(pw);
   }
 
   remove(password: Password){
-    // TODO: 
+    // TODO: implement remove
     // TODO: save db
     // TODO: check if always sync --> then sync
   }

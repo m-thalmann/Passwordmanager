@@ -38,7 +38,13 @@ export class PasswordOverlayComponent implements OnInit {
   ngOnInit() {
     this.dialogRef.beforeClose().subscribe(() => {
       if(this.edit_mode){
-        // TODO: ask if save wanted after check that unsaved changes exist
+        this.dialog.open(ConfirmOverlayComponent, {
+          data: { title: 'Save', message: 'You have unsaved local changes. Do you want to save them?' }
+        }).afterClosed().subscribe(ret => {
+          if (ret === true) {
+            this.save();
+          }
+        })
       }
     });
 
@@ -196,7 +202,7 @@ export class PasswordOverlayComponent implements OnInit {
       data: { title: 'Warning', message: 'Do you really want to delete this password?', critical: true }
     }).afterClosed().subscribe(ret => {
       if(ret === true){
-        // TODO: 
+        // TODO: remove password
       }
     })
   }
