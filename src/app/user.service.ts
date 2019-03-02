@@ -99,15 +99,15 @@ export class UserService {
         return UserService.unlock_return.MAX_TRIES;
       }
 
+      let pin_hash = new Md5Pipe().transform(pin.toString());
+
       let pw = localStorage.getItem(PW);
-      let bf = new Blowfish(pin.toString());
+      let bf = new Blowfish(pin_hash);
 
       this.password = bf.trimZeros(bf.decrypt(bf.base64Decode(pw)));
 
       bf = new Blowfish(this.password);
       let test_item = localStorage.getItem(TEST_ITEM_KEY);
-
-      
       
       if(!test_item)
       return UserService.unlock_return.ERROR;
@@ -188,7 +188,9 @@ export class UserService {
 
   setPIN(pin: number){
     if(this.isLoggedin()){
-      let bf = new Blowfish(pin.toString());
+      let pin_hash = new Md5Pipe().transform(pin.toString())
+
+      let bf = new Blowfish(pin_hash);
       let pw = bf.base64Encode(bf.encrypt(this.password));
       localStorage.setItem(PW, pw);
     }
