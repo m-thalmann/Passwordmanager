@@ -36,7 +36,7 @@ export class PasswordOverlayComponent implements OnInit {
 
   ngOnInit() {
     this.dialogRef.beforeClose().subscribe(() => {
-      if(this.edit_mode){
+      if(this.edit_mode && this.changed){
         this.dialog.open(ConfirmOverlayComponent, {
           data: { title: 'Save', message: 'You have unsaved local changes. Do you want to save them?' }
         }).afterClosed().subscribe(ret => {
@@ -61,7 +61,7 @@ export class PasswordOverlayComponent implements OnInit {
         data: {},
         last_changed: null,
         tags: []
-      }
+      };
     }
 
     this.form = this.fb.group({
