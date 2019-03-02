@@ -3,7 +3,6 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { UserService } from '../user.service';
 import { ApiService } from '../api.service';
 import { PasswordOverlayComponent } from '../password-overlay/password-overlay.component';
@@ -32,12 +31,6 @@ export class MainNavComponent {
 
     await this.api.logout();
     this.user.logout();
-  }
-
-  showAbout() {
-    this.dialog.open(AboutDialogComponent, {
-      width: '250px'
-    });
   }
 
   toggleSearch(btn_click = true) {

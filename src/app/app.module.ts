@@ -11,7 +11,6 @@ import { PageHomeComponent } from './page-home/page-home.component';
 import { PagePasswordsComponent } from './page-passwords/page-passwords.component';
 import { PageTagsComponent } from './page-tags/page-tags.component';
 import { PageSettingsComponent } from './page-settings/page-settings.component';
-import { AboutDialogComponent } from './about-dialog/about-dialog.component';
 import { PageLoginComponent } from './page-login/page-login.component';
 import { PageRegisterComponent } from './page-register/page-register.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -32,7 +31,6 @@ import { ConfirmOverlayComponent } from './confirm-overlay/confirm-overlay.compo
     PagePasswordsComponent,
     PageTagsComponent,
     PageSettingsComponent,
-    AboutDialogComponent,
     PageLoginComponent,
     PageRegisterComponent,
     Md5Pipe,
@@ -53,7 +51,7 @@ import { ConfirmOverlayComponent } from './confirm-overlay/confirm-overlay.compo
     ReactiveFormsModule,
   ],
   providers: [],
-  entryComponents:[ AboutDialogComponent, PasswordOverlayComponent, ConfirmOverlayComponent ],
+  entryComponents:[ PasswordOverlayComponent, ConfirmOverlayComponent ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

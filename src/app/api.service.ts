@@ -209,9 +209,7 @@ export class ApiService {
       let params = new HttpParams()
         .append('data', JSON.stringify(passwords));
 
-      let ret = await this.http.post(API_URL + 'update/' + this.user.token, params).toPromise();
-
-      // TODO: wait for answer and set id's
+      let ret = await this.http.post<number[]>(API_URL + 'update/' + this.user.token, params).toPromise();
 
       return ret;
     } catch (e) {
@@ -224,6 +222,6 @@ export class ApiService {
   }
 
   async updatePassword(password: PasswordAPI){
-    return await this.updatePasswords([password]);
+    return (await this.updatePasswords([password]))[0];
   }
 }

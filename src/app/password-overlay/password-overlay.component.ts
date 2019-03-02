@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent, MatDialog } from '@angular/material';
-import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { Password } from '../api.service';
 import { PasswordsService } from '../passwords.service';
 import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
@@ -32,7 +31,7 @@ export class PasswordOverlayComponent implements OnInit {
 
   private default_data: Password = null;
 
-  constructor(public dialogRef: MatDialogRef<AboutDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any, public password: PasswordsService,
+  constructor(public dialogRef: MatDialogRef<PasswordOverlayComponent>, @Inject(MAT_DIALOG_DATA) public data: any, public password: PasswordsService,
     private fb: FormBuilder, private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -152,6 +151,8 @@ export class PasswordOverlayComponent implements OnInit {
     this.default_data.data = JSON.parse(JSON.stringify(trimObject(this.form.value)));
     this.default_data.tags = this.tags.slice();
     this.default_data._id = await this.password.update(this.default_data);
+
+    this.setFormData();
   }
 
   add_tag(event: MatChipInputEvent): void {

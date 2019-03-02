@@ -48,7 +48,7 @@ export class PasswordsService {
     }
   }
 
-  update(password: Password){
+  async update(password: Password){
     this.check_decrypted();
 
     let today: Date = new Date();
@@ -85,7 +85,8 @@ export class PasswordsService {
 
     // TODO: check if sync
     if(true){
-      this.api.updatePassword(pw);
+      pw.id = await this.api.updatePassword(pw);
+      password.id = pw.id;
     }
 
     return this.dexie.update(pw);

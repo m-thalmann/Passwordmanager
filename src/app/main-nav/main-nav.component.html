@@ -22,7 +22,6 @@
       </button>
       <a routerLink="/home" id="app-title" [style.opacity]="!(isHandset$ | async) || !search_opened ? 1 : 0">Passwordmanager</a>
       <mat-menu #appMenu="matMenu" xPosition="before">
-        <button mat-menu-item (click)="showAbout()"><mat-icon>info</mat-icon> About</button>
         <a mat-menu-item routerLink="/settings"><mat-icon>settings</mat-icon> Settings</a>
         <button mat-menu-item (click)="lock()" *ngIf="this.user.isKnown() && this.user.hasTest()"><mat-icon>lock</mat-icon> Lock</button>
         <button mat-menu-item (click)="logout()"><mat-icon color="warn">logout</mat-icon> Logout</button>
