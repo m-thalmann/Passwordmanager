@@ -14,7 +14,8 @@ import {
   MatCheckboxModule,
   MatTooltipModule,
   MatChipsModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatSelectModule
 } from '@angular/material';
 
 import {
@@ -40,7 +41,8 @@ import {
     MatCheckboxModule,
     MatTooltipModule,
     MatChipsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatSelectModule,
   ],
 })
 export class MaterialModule { }

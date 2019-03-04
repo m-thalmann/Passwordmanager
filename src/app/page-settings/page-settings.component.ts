@@ -3,6 +3,8 @@ import { UserService } from '../user.service';
 import { MatSnackBar } from '@angular/material';
 import { Md5Pipe } from '../md5.pipe';
 import { ApiService } from '../api.service';
+import { SyncModeService } from '../sync-mode.service';
+import { PasswordsService } from '../passwords.service';
 
 @Component({
   selector: 'app-page-settings',
@@ -24,7 +26,7 @@ export class PageSettingsComponent {
     this.sessions_loading = false;
   });
 
-  constructor(public user: UserService, private api: ApiService, public snackBar: MatSnackBar) { }
+  constructor(public user: UserService, private api: ApiService, public snackBar: MatSnackBar, private syncMode: SyncModeService, private passwords: PasswordsService) { }
 
   checkPW(){
     let pw = new Md5Pipe().transform(this.password);
@@ -130,5 +132,17 @@ export class PageSettingsComponent {
     this.sessions = this.api.getLogins().finally(() => {
       this.sessions_loading = false;
     });
+  }
+
+  set sync_mode(mode: string){
+    this.syncMode.mode = mode;
+  }
+
+  get sync_mode(){
+    return this.syncMode.mode;
+  }
+
+  async sync(){
+    this.passwords.sync();
   }
 }

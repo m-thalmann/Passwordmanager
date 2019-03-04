@@ -82,7 +82,7 @@ export class DexieService extends Dexie {
    * @returns amount of deleted passwords
    */
   async remove(_id: number){
-    return await this.passwords.where('_id').equals(_id).delete;
+    return await this.passwords.where('_id').equals(_id).delete();
   }
 
   async clear(){

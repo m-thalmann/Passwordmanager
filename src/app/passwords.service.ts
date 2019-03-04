@@ -4,6 +4,7 @@ import { UserService } from './user.service';
 import { Blowfish } from 'javascript-blowfish';
 import { Md5Pipe } from './md5.pipe';
 import { DexieService } from './dexie.service';
+import { SyncModeService } from './sync-mode.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,23 +12,36 @@ import { DexieService } from './dexie.service';
 export class PasswordsService {
   passwords: Password[] = null;
 
-  constructor(private api: ApiService, private user: UserService, private dexie: DexieService) { }
+  constructor(private api: ApiService, private user: UserService, private dexie: DexieService, private syncMode: SyncModeService) { }
 
   async unlock(){
     if(!this.decrypted){
       let passwords: PasswordDexie[] = null;
       
-      // TODO: check settings if always update / now update needed
-      if(navigator.onLine && ((passwords = await this.dexie.getAll()).length == 0)){
-        passwords = await this.api.loadPasswords();
-        
-        await this.dexie.updateCollection(passwords);
+      if(navigator.onLine && ((passwords = await this.dexie.getAll()).length == 0 || this.syncMode.mode == this.syncMode.modes.automatically)){
+        passwords = await this.load();
       }else{
         passwords = await this.dexie.getAll();
       }
 
       this.passwords = this.decryptCollection(passwords);
     }
+  }
+
+  private async load(){
+    let ids = (await this.dexie.getAll()).map(pw => { return { id: pw.id, _id: pw._id } }).filter(pw => pw.id != -1);
+
+    let passwords = await this.api.loadPasswords();
+        
+    await this.dexie.updateCollection(passwords);
+
+    let prms = [];
+
+    ids.filter(id => passwords.map(pw => pw.id).indexOf(id.id) == -1).forEach(id => prms.push(this.dexie.remove(id._id)));
+
+    await Promise.all(prms);
+
+    return passwords;
   }
 
   get(){
@@ -83,8 +97,7 @@ export class PasswordsService {
 
     let pw = this.encrypt(password);
 
-    // TODO: check if sync
-    if(true){
+    if(this.syncMode.mode == this.syncMode.modes.automatically){
       pw.id = await this.api.updatePassword(pw);
       password.id = pw.id;
     }
@@ -184,5 +197,27 @@ export class PasswordsService {
     }
 
     return str;
+  }
+
+  async sync(){
+    await this.unlock();
+
+    let headers = await this.api.loadHeaders();
+
+    let toSync = this.passwords.filter(pword => pword.id == -1);
+
+    headers.forEach(header => {
+      let password = this.passwords.filter(pword => pword.id == header.id)[0];
+
+      if(Date.parse(header.last_changed) < Date.parse(password.last_changed)){
+        toSync.push(password);
+      }
+    });
+
+    let encSync = this.encryptCollection(toSync);
+
+    await this.api.updatePasswords(encSync);
+
+    this.passwords = this.decryptCollection(await this.load());
   }
 }

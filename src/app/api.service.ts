@@ -178,7 +178,7 @@ export class ApiService {
 
   async loadHeaders(id?: number){
     try {
-      let ret = await this.http.get(API_URL + 'load/headers/' + this.user.token + (id ? '/' + id : '')).toPromise();
+      let ret = await this.http.get<{id: number, last_changed: string}[]>(API_URL + 'load/headers/' + this.user.token + (id ? '/' + id : '')).toPromise();
 
       return ret;
     } catch (e) {
@@ -207,7 +207,7 @@ export class ApiService {
   async updatePasswords(passwords: PasswordAPI[]){
     try {
       let params = new HttpParams()
-        .append('data', JSON.stringify(passwords));
+        .append('data', JSON.stringify(passwords).replace(/\+/gi, '%2B'));
 
       let ret = await this.http.post<number[]>(API_URL + 'update/' + this.user.token, params).toPromise();
 
