@@ -35,7 +35,7 @@
         </button>
 
         <span id="search_form" [ngClass]="{'open': search_opened}">
-          <input matInput [(ngModel)]="search" autocomplete="off" #search_field (blur)="toggleSearch(false)">
+          <input matInput [(ngModel)]="search" autocomplete="off" #search_field (blur)="toggleSearch(false)" (keyup)="search_changed()" (keydown.esc)="toggleSearch(false, false)">
         </span>
       </span>
 

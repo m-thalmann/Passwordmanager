@@ -13,7 +13,15 @@ interface Tag{
   styleUrls: ['./page-tags.component.scss']
 })
 export class PageTagsComponent implements OnInit, OnDestroy {
-  tags: Tag[] = [];
+  private _tags: Tag[] = [];
+  private search: string = null;
+
+  get tags(){
+    if(this.search == null || this.search.trim().length == 0){
+      return this._tags;
+    }
+    return this._tags.filter(tag => tag.name.indexOf(this.search) != -1);
+  }
 
   private pword_subscription = null;
 
@@ -34,19 +42,23 @@ export class PageTagsComponent implements OnInit, OnDestroy {
   }
 
   private setPasswords(pwords: Password[]){
-    this.tags = [];
+    this._tags = [];
     pwords.forEach(password => {
       password.tags.forEach(tag => {
-        let pos = this.tags.map(el => el.name).indexOf(tag);
+        let pos = this._tags.map(el => el.name).indexOf(tag);
         if(pos == -1){
-          this.tags.push({
+          this._tags.push({
             name: tag,
             amount: 1
           });
         }else{
-          this.tags[pos].amount++;
+          this._tags[pos].amount++;
         }
       });
     });
+  }
+
+  searched(search: string){
+    this.search = search;
   }
 }

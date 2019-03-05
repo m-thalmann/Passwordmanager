@@ -10,6 +10,7 @@ import { Password } from 'src/app/api.service';
 })
 export class TagsListComponent implements OnDestroy {
   private pword_subscription = null;
+  private search: string = null;
 
   set tagName(name: string){
     name = name.toLowerCase();
@@ -26,14 +27,18 @@ export class TagsListComponent implements OnDestroy {
   }
 
   private setPasswords(pwords: Password[]){
-    this.pwords = pwords.filter(password => {
+    this._pwords = pwords.filter(password => {
       return password.tags.map(tag => tag.toLowerCase()).indexOf(this.tag_name) != -1;
     });
   }
 
   tag_name: string = null;
 
-  pwords: Password[] = null;
+  private _pwords: Password[] = null;
+
+  get pwords(){
+    return PasswordsService.search(this._pwords, this.search);
+  }
 
   constructor(private route: ActivatedRoute, private passwords: PasswordsService, private router: Router) {
     this.tagName = this.route.snapshot.params['name'];
@@ -49,5 +54,9 @@ export class TagsListComponent implements OnDestroy {
 
   back(){
     this.router.navigateByUrl('/tags');
+  }
+
+  searched(search: string){
+    this.search = search;
   }
 }

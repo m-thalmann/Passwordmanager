@@ -1,4 +1,4 @@
-<main-nav>
+<main-nav (searched)="searched($event)">
   <h3>
     <button mat-icon-button (click)="back()" style="vertical-align: middle"><mat-icon>arrow_back</mat-icon></button>
     <span style="display: inline-block; vertical-align: sub">{{ tag_name | word }}</span>

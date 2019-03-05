@@ -1,4 +1,4 @@
-<main-nav>
+<main-nav (searched)="searched($event)">
   <h3>Tags</h3>
   <mat-nav-list>
     <mat-list-item *ngFor="let tag of tags" [routerLink]="'/tags/' + tag.name">

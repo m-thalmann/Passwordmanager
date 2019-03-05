@@ -285,4 +285,36 @@ export class PasswordsService {
 
     this.update_emitter.emit(this.passwords);
   }
+
+  static search(passwords: Password[], text: string){
+    if(text == null || text.trim().length == 0){
+      return passwords;
+    }
+
+    return passwords.filter(pword => {
+      let ret = pword.tags.some(tag => {
+        return tag.indexOf(text) != -1;
+      });
+
+      if(!ret && pword.data.name){
+        ret = pword.data.name.indexOf(text) != -1;
+      }
+
+      if(!ret && pword.data.username){
+        ret = pword.data.username.indexOf(text) != -1;
+      }
+
+      if(!ret && pword.data.domain){
+        ret = pword.data.domain.indexOf(text) != -1;
+      }
+
+      if(!ret && pword.data.additional_data){
+        ret = pword.data.additional_data.some(data => {
+          return data.name.indexOf(text) != -1 || data.value.indexOf(text) != -1;
+        });
+      }
+
+      return ret;
+    });
+  }
 }

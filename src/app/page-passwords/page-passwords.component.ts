@@ -8,7 +8,12 @@ import { Password } from '../api.service';
   styleUrls: ['./page-passwords.component.scss']
 })
 export class PagePasswordsComponent implements OnInit, OnDestroy{
-  pwords = null;
+  private _pwords = null;
+  private search = null;
+
+  get pwords(){
+    return PasswordsService.search(this._pwords, this.search);
+  }
 
   private pword_subscription = null;
 
@@ -17,15 +22,19 @@ export class PagePasswordsComponent implements OnInit, OnDestroy{
 
   ngOnInit() {
     this.passwords.unlock().then(() => {
-      this.pwords = this.passwords.snapshot;
+      this._pwords = this.passwords.snapshot;
 
       this.pword_subscription = this.passwords.get().subscribe((data: Password[]) => {
-        this.pwords = data;
+        this._pwords = data;
       })
     });
   }
 
   ngOnDestroy() {
     this.pword_subscription.unsubscribe();
+  }
+
+  searched(search: string){
+    this.search = search;
   }
 }
