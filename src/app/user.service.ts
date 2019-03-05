@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { Blowfish } from 'javascript-blowfish';
 import { Md5Pipe } from './md5.pipe';
+import { DexieService } from './dexie.service';
+import { Router } from '@angular/router';
+import { PasswordsService } from './passwords.service';
 
 const TOKEN = 'TOKEN';
 const USER = 'USER';
@@ -31,7 +34,7 @@ class User{
 })
 export class UserService {
 
-  constructor(){
+  constructor(private dexie: DexieService, private router: Router){
     this.setUser();
   }
 
@@ -166,9 +169,14 @@ export class UserService {
     localStorage.removeItem(TOKEN);
     localStorage.removeItem(USER);
     localStorage.removeItem(PW);
-    // TODO: remove all passwords
+    this.dexie.clear();
 
     location.href = "/login";
+  }
+
+  lock(){
+    this.password = null;
+    this.router.navigateByUrl('/login');
   }
 
   isLoggedin() {

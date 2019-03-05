@@ -21,7 +21,7 @@ export class MainNavComponent {
   @ViewChild("search_field") search_field: ElementRef;
 
   lock(){
-    location.reload();
+    this.user.lock();
   }
 
   async logout() {

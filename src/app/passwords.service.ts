@@ -18,6 +18,14 @@ export class PasswordsService {
 
   constructor(private api: ApiService, private user: UserService, private dexie: DexieService, private syncMode: SyncModeService) { }
 
+  lock(){
+    if(this.decrypted){
+      this.passwords = null;
+      this.update_emitter.emit(null);
+      this.user.lock();
+    }
+  }
+
   async unlock(){
     if(!this.decrypted){
       let passwords: PasswordDexie[] = null;
