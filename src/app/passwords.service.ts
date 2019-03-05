@@ -158,6 +158,28 @@ export class PasswordsService {
     this.reloadDB();
   }
 
+  async removeAll(){
+    await this.unlock();
+    
+    if(navigator.onLine && this.syncMode.mode == this.syncMode.modes.automatically){
+      await this.api.deleteAllPasswords();
+    }else{
+      let dp = JSON.parse(localStorage.getItem(DELETED_PASSWORDS));
+
+      dp = dp ? dp : [];
+
+      this.passwords.forEach(pw => {
+        if(dp.indexOf(pw.id) == -1){
+          dp.push(pw.id);
+        }
+      });
+
+      localStorage.setItem(DELETED_PASSWORDS, JSON.stringify(dp));
+    }
+
+    this.reloadDB();
+  }
+
   private check_decrypted(should_be: boolean = true){
     if(this.decrypted && !should_be){
       throw 'Already decrypted';

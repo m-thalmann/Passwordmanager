@@ -204,6 +204,20 @@ export class ApiService {
     }
   }
 
+  async deleteAllPasswords(){
+    try {
+      let ret = await this.http.delete(API_URL + 'delete/' + this.user.token).toPromise();
+
+      return ret;
+    } catch (e) {
+      if (e.status == 403) {
+        this.user.logout();
+      } else {
+        throw e;
+      }
+    }
+  }
+
   async updatePasswords(passwords: PasswordAPI[]){
     try {
       let params = new HttpParams()

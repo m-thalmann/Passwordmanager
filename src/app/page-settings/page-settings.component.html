@@ -54,7 +54,20 @@
         </form>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button color="accent" (click)="sync()">Sync now</button>
+        <button mat-button color="accent" (click)="sync()" [disabled]="settings_changing" style="height: 36px">
+          <mat-spinner *ngIf="synchronizing" color="accent" diameter="16" style="margin: 0 auto"></mat-spinner>
+          <span *ngIf="!synchronizing">Sync now</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>delete_forever</mat-icon>
+        <mat-card-title>Delete data</mat-card-title>
+      </mat-card-header>
+      <mat-card-actions>
+        <button mat-button color="warn" (click)="deleteData()" [disabled]="settings_changing">Delete all stored data</button>
       </mat-card-actions>
     </mat-card>
 

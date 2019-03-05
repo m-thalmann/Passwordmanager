@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { UserService } from '../user.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { Md5Pipe } from '../md5.pipe';
 import { ApiService } from '../api.service';
 import { SyncModeService } from '../sync-mode.service';
 import { PasswordsService } from '../passwords.service';
+import { ConfirmOverlayComponent } from '../confirm-overlay/confirm-overlay.component';
 
 @Component({
   selector: 'app-page-settings',
@@ -21,12 +22,14 @@ export class PageSettingsComponent {
 
   settings_changing: boolean = false;
   sessions_loading: boolean = true;
+  synchronizing: boolean = false;
 
   sessions = this.api.getLogins().finally(() => {
     this.sessions_loading = false;
   });
 
-  constructor(public user: UserService, private api: ApiService, public snackBar: MatSnackBar, private syncMode: SyncModeService, private passwords: PasswordsService) { }
+  constructor(public user: UserService, private api: ApiService, public snackBar: MatSnackBar,
+    private syncMode: SyncModeService, private passwords: PasswordsService, private dialog: MatDialog) { }
 
   checkPW(){
     let pw = new Md5Pipe().transform(this.password);
@@ -143,6 +146,22 @@ export class PageSettingsComponent {
   }
 
   async sync(){
-    this.passwords.sync();
+    this.settings_changing = true;
+    this.synchronizing = true;
+    await this.passwords.sync();
+    this.settings_changing = false;
+    this.synchronizing = false;
+  }
+  
+  deleteData(){
+    this.dialog.open(ConfirmOverlayComponent, {
+      data: { title: 'Warning', message: 'Do you really want to delete all of your saved passwords? This can not be undone!', critical: true }
+    }).afterClosed().subscribe(async ret => {
+      if (ret === true) {
+        this.settings_changing = true;
+        await this.passwords.removeAll();
+        this.settings_changing = false;
+      }
+    })
   }
 }
