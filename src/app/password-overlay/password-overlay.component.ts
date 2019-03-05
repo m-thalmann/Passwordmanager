@@ -26,6 +26,8 @@ export class PasswordOverlayComponent implements OnInit {
   filteredTags: Observable<string[]>;
   tags: string[] = [];
 
+  private deleted: boolean = false;
+
   @ViewChild('tagsInput') tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('autocomplete_tags') matAutocomplete: MatAutocomplete;
 
@@ -36,7 +38,7 @@ export class PasswordOverlayComponent implements OnInit {
 
   ngOnInit() {
     this.dialogRef.beforeClose().subscribe(() => {
-      if(this.edit_mode && this.changed){
+      if(!this.deleted && this.edit_mode && this.changed){
         this.dialog.open(ConfirmOverlayComponent, {
           data: { title: 'Save', message: 'You have unsaved local changes. Do you want to save them?' }
         }).afterClosed().subscribe(ret => {
@@ -201,9 +203,13 @@ export class PasswordOverlayComponent implements OnInit {
   remove(){
     this.dialog.open(ConfirmOverlayComponent, {
       data: { title: 'Warning', message: 'Do you really want to delete this password?', critical: true }
-    }).afterClosed().subscribe(ret => {
+    }).afterClosed().subscribe(async ret => {
       if(ret === true){
-        // TODO: remove password
+        this.deleted = true;
+
+        this.dialogRef.close();
+
+        await this.password.remove(this.default_data);
       }
     })
   }

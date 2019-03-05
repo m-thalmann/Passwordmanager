@@ -1,4 +1,7 @@
 <main-nav>
-  <h3>Tag: {{ tag_name | word }}</h3>
+  <h3>
+    <button mat-icon-button (click)="back()" style="vertical-align: middle"><mat-icon>arrow_back</mat-icon></button>
+    <span style="display: inline-block; vertical-align: sub">{{ tag_name | word }}</span>
+  </h3>
   <password-list [passwords]="pwords"></password-list>
 </main-nav>

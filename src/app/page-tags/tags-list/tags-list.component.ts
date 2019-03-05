@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PasswordsService } from 'src/app/passwords.service';
 import { Password } from 'src/app/api.service';
 
@@ -8,16 +8,26 @@ import { Password } from 'src/app/api.service';
   templateUrl: './tags-list.component.html',
   styleUrls: ['./tags-list.component.scss']
 })
-export class TagsListComponent {
+export class TagsListComponent implements OnDestroy {
+  private pword_subscription = null;
+
   set tagName(name: string){
     name = name.toLowerCase();
 
     this.tag_name = name;
 
     this.passwords.unlock().then(() => {
-      this.pwords = this.passwords.get().filter(password => {
-        return password.tags.map(tag => tag.toLowerCase()).indexOf(name) != -1;
-      });
+      this.setPasswords(this.passwords.snapshot);
+      
+      this.pword_subscription = this.passwords.get().subscribe((data: Password[]) => {
+        this.setPasswords(data);
+      })
+    });
+  }
+
+  private setPasswords(pwords: Password[]){
+    this.pwords = pwords.filter(password => {
+      return password.tags.map(tag => tag.toLowerCase()).indexOf(this.tag_name) != -1;
     });
   }
 
@@ -25,11 +35,19 @@ export class TagsListComponent {
 
   pwords: Password[] = null;
 
-  constructor(private route: ActivatedRoute, private passwords: PasswordsService) {
+  constructor(private route: ActivatedRoute, private passwords: PasswordsService, private router: Router) {
     this.tagName = this.route.snapshot.params['name'];
 
     this.route.params.subscribe(params => {
       this.tagName = params['name'];
     });
+  }
+
+  ngOnDestroy() {
+    this.pword_subscription.unsubscribe();
+  }
+
+  back(){
+    this.router.navigateByUrl('/tags');
   }
 }

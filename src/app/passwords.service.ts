@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { ApiService, Password, PasswordDexie } from './api.service';
 import { UserService } from './user.service';
 import { Blowfish } from 'javascript-blowfish';
@@ -6,11 +6,15 @@ import { Md5Pipe } from './md5.pipe';
 import { DexieService } from './dexie.service';
 import { SyncModeService } from './sync-mode.service';
 
+const DELETED_PASSWORDS = 'DELETED_PASSWORDS';
+
 @Injectable({
   providedIn: 'root'
 })
 export class PasswordsService {
   passwords: Password[] = null;
+
+  private update_emitter = new EventEmitter<Password[]>();
 
   constructor(private api: ApiService, private user: UserService, private dexie: DexieService, private syncMode: SyncModeService) { }
 
@@ -18,14 +22,20 @@ export class PasswordsService {
     if(!this.decrypted){
       let passwords: PasswordDexie[] = null;
       
-      if(navigator.onLine && ((passwords = await this.dexie.getAll()).length == 0 || this.syncMode.mode == this.syncMode.modes.automatically)){
+      if(navigator.onLine && this.syncMode.mode == this.syncMode.modes.automatically){
         passwords = await this.load();
       }else{
         passwords = await this.dexie.getAll();
       }
 
       this.passwords = this.decryptCollection(passwords);
+      this.update_emitter.emit(this.passwords);
     }
+  }
+
+  private async reloadDB(){
+    this.passwords = this.decryptCollection(await this.dexie.getAll());
+    this.update_emitter.emit(this.passwords);
   }
 
   private async load(){
@@ -44,10 +54,16 @@ export class PasswordsService {
     return passwords;
   }
 
-  get(){
+  get snapshot(){
     this.check_decrypted();
 
     return this.passwords;
+  }
+
+  get(){
+    this.check_decrypted();
+
+    return this.update_emitter;
   }
 
   async save(){
@@ -97,18 +113,41 @@ export class PasswordsService {
 
     let pw = this.encrypt(password);
 
-    if(this.syncMode.mode == this.syncMode.modes.automatically){
+    if(navigator.onLine && this.syncMode.mode == this.syncMode.modes.automatically){
       pw.id = await this.api.updatePassword(pw);
       password.id = pw.id;
     }
 
-    return this.dexie.update(pw);
+    let ret = this.dexie.update(pw);
+
+    this.update_emitter.emit(this.passwords);
+
+    return ret;
   }
 
-  remove(password: Password){
-    // TODO: implement remove
-    // TODO: save db
-    // TODO: check if always sync --> then sync
+  async remove(password: Password){
+    if(password._id){
+      await this.dexie.remove(password._id);
+    }
+
+    if(password.id == -1){
+      return;
+    }
+
+    if(navigator.onLine && this.syncMode.mode == this.syncMode.modes.automatically){
+      await this.api.deletePassword(password.id);
+    }else{
+      let dp = JSON.parse(localStorage.getItem(DELETED_PASSWORDS));
+
+      dp = dp ? dp : [];
+      
+      if(dp.indexOf(password.id) == -1){
+        dp.push(password.id);
+        localStorage.setItem(DELETED_PASSWORDS, JSON.stringify(dp));
+      }
+    }
+
+    this.reloadDB();
   }
 
   private check_decrypted(should_be: boolean = true){
@@ -209,15 +248,33 @@ export class PasswordsService {
     headers.forEach(header => {
       let password = this.passwords.filter(pword => pword.id == header.id)[0];
 
-      if(Date.parse(header.last_changed) < Date.parse(password.last_changed)){
+      if(password && Date.parse(header.last_changed) < Date.parse(password.last_changed)){
         toSync.push(password);
       }
     });
 
-    let encSync = this.encryptCollection(toSync);
+    if(toSync.length > 0){
+      let encSync = this.encryptCollection(toSync);
+  
+      await this.api.updatePasswords(encSync);
+    }
 
-    await this.api.updatePasswords(encSync);
+    let dp = JSON.parse(localStorage.getItem(DELETED_PASSWORDS));
+
+    dp = dp ? dp : [];
+
+    let prms = [];
+
+    dp.forEach((id: number) => {
+      prms.push(this.api.deletePassword(id));
+    });
+
+    await Promise.all(prms);
+
+    localStorage.removeItem(DELETED_PASSWORDS);
 
     this.passwords = this.decryptCollection(await this.load());
+
+    this.update_emitter.emit(this.passwords);
   }
 }
