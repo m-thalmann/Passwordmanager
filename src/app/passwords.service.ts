@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { ApiService, Password, PasswordDexie } from './api.service';
+import { ApiService, Password, PasswordDexie, Settings } from './api.service';
 import { UserService } from './user.service';
 import { Blowfish } from 'javascript-blowfish';
 import { Md5Pipe } from './md5.pipe';
@@ -36,13 +36,13 @@ export class PasswordsService {
         passwords = await this.dexie.getAll();
       }
 
-      this.passwords = this.decryptCollection(passwords);
+      this.passwords = this.decryptCollection(passwords, this.user.password);
       this.update_emitter.emit(this.passwords);
     }
   }
 
   private async reloadDB(){
-    this.passwords = this.decryptCollection(await this.dexie.getAll());
+    this.passwords = this.decryptCollection(await this.dexie.getAll(), this.user.password);
     this.update_emitter.emit(this.passwords);
   }
 
@@ -76,7 +76,7 @@ export class PasswordsService {
 
   async save(){
     try{
-      let ret = this.encryptCollection(this.passwords).map(pw => {
+      let ret = this.encryptCollection(this.passwords, this.user.password).map(pw => {
         return this.dexie.update(pw);
       });
 
@@ -119,7 +119,7 @@ export class PasswordsService {
       }
     }
 
-    let pw = this.encrypt(password);
+    let pw = this.encrypt(password, this.user.password);
 
     if(navigator.onLine && this.syncMode.mode == this.syncMode.modes.automatically){
       pw.id = await this.api.updatePassword(pw);
@@ -192,11 +192,11 @@ export class PasswordsService {
     return this.passwords != null;
   }
 
-  private decryptCollection(passwords: PasswordDexie[]){
-    return passwords.map(el => this.decrypt(el));
+  private decryptCollection(passwords: PasswordDexie[], pw: string){
+    return passwords.map(el => this.decrypt(el, pw));
   }
 
-  private decrypt(password: PasswordDexie){
+  private decrypt(password: PasswordDexie, pw: string){
     let element: Password = {
       id: password.id,
       enc_key: null,
@@ -209,7 +209,7 @@ export class PasswordsService {
       element._id = password._id;
     }
 
-    let bf = new Blowfish(this.user.password);
+    let bf = new Blowfish(pw);
 
     element.enc_key = bf.trimZeros(bf.decrypt(bf.base64Decode(password.enc_key)));
 
@@ -220,11 +220,11 @@ export class PasswordsService {
     return element;
   }
 
-  private encryptCollection(passwords: Password[]) {
-    return passwords.map(el => this.encrypt(el));
+  private encryptCollection(passwords: Password[], pw: string) {
+    return passwords.map(el => this.encrypt(el, pw));
   }
 
-  private encrypt(password: Password){
+  private encrypt(password: Password, pw: string){
     let element: PasswordDexie = {
       id: password.id,
       enc_key: null,
@@ -241,7 +241,7 @@ export class PasswordsService {
 
     element.data = bf.base64Encode(bf.encrypt(JSON.stringify(password.data)));
 
-    bf = new Blowfish(this.user.password);
+    bf = new Blowfish(pw);
 
     element.enc_key = bf.base64Encode(bf.encrypt(password.enc_key));
 
@@ -284,7 +284,7 @@ export class PasswordsService {
     });
 
     if(toSync.length > 0){
-      let encSync = this.encryptCollection(toSync);
+      let encSync = this.encryptCollection(toSync, this.user.password);
   
       await this.api.updatePasswords(encSync);
     }
@@ -303,9 +303,26 @@ export class PasswordsService {
 
     localStorage.removeItem(DELETED_PASSWORDS);
 
-    this.passwords = this.decryptCollection(await this.load());
+    this.passwords = this.decryptCollection(await this.load(), this.user.password);
 
     this.update_emitter.emit(this.passwords);
+  }
+
+  async newMasterPassword(pw: string){
+    await this.sync();
+
+    let ret = this.encryptCollection(this.passwords, pw);
+
+    await this.api.updatePasswords(ret);
+  }
+
+  async change_user_settings(settings: Settings){
+    if(settings.password){
+      settings.password = new Md5Pipe().transform(settings.password);
+      await this.newMasterPassword(settings.password);
+    }
+
+    await this.api.updateSettings(settings);
   }
 
   static search(passwords: Password[], text: string){

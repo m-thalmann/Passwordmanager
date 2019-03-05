@@ -131,8 +131,7 @@ export class ApiService {
       params = params.append('email', settings.email);
     }
     if(settings.password){
-      // TODO: change all saved password keys to the one with new password (+ pushing them to server) before updating password
-      params = params.append('password', new Md5Pipe().transform(settings.password));
+      params = params.append('password', settings.password);
     }
 
     try{

@@ -92,7 +92,7 @@ export class PageSettingsComponent {
           }
         }
 
-        await this.api.updateSettings(data);
+        await this.passwords.change_user_settings(data);
       }catch(e){
         this.snackBar.open(e.error.error, "OK", {
           duration: 5000,
