@@ -1,5 +1,5 @@
 <main-nav (searched)="searched($event)">
-  <h3>Tags</h3>
+  <h3>Tags ({{ tags ? tags.length : 0 }})</h3>
   <mat-nav-list>
     <mat-list-item *ngFor="let tag of tags" [routerLink]="'/tags/' + tag.name">
       <i [class]="tag.name | tagIcon" mat-list-icon></i>
