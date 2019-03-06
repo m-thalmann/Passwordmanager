@@ -69,42 +69,48 @@ export class PageSettingsComponent {
   }
 
   async change_settings(){
-    // TODO: show confirm first, that all data on all sessions will be removed
-    if(this.checkPW()){
-      try{
-        this.settings_changing = true;
-
-        let data = {};
-
-        if(this.new_email != ''){
-          data['email'] = this.new_email;
-        }
-
-        if(this.new_password != '' && this.new_password_retype != ''){
-          if(this.new_password == this.new_password_retype){
-            data['password'] = this.new_password;
-          }else{
-            this.snackBar.open('Passwords do not match', "OK", {
+    this.dialog.open(ConfirmOverlayComponent, {
+      data: { title: 'Warning', message: 'By changing your credentials, you will be logged out from all devices and all locally saved data will be cleared!' +
+        ' Do you really want to change them?', critical: true }
+    }).afterClosed().subscribe(async ret => {
+      if (ret === true) {
+        if(this.checkPW()){
+          try{
+            this.settings_changing = true;
+    
+            let data = {};
+    
+            if(this.new_email != ''){
+              data['email'] = this.new_email;
+            }
+    
+            if(this.new_password != '' && this.new_password_retype != ''){
+              if(this.new_password == this.new_password_retype){
+                data['password'] = this.new_password;
+              }else{
+                this.snackBar.open('Passwords do not match', "OK", {
+                  duration: 5000,
+                  panelClass: 'snackbar_error'
+                });
+                return;
+              }
+            }
+    
+            await this.passwords.change_user_settings(data);
+          }catch(e){
+            this.snackBar.open(e.error.error, "OK", {
               duration: 5000,
               panelClass: 'snackbar_error'
             });
-            return;
           }
+          
+          this.password = this.new_email = this.new_password = this.new_password_retype = '';
+          
+          await this.api.checkAuth();
+          this.settings_changing = false;
         }
-
-        await this.passwords.change_user_settings(data);
-      }catch(e){
-        this.snackBar.open(e.error.error, "OK", {
-          duration: 5000,
-          panelClass: 'snackbar_error'
-        });
       }
-      
-      this.password = this.new_email = this.new_password = this.new_password_retype = '';
-      
-      await this.api.checkAuth();
-      this.settings_changing = false;
-    }
+    })
   }
 
   async removeLogin(id: number){

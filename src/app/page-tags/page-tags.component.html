@@ -9,6 +9,10 @@
         <mat-chip matTooltip="Amount" matTooltipPosition="before">{{ tag.amount }}</mat-chip>
       </mat-chip-list>
     </mat-list-item>
+
+    <mat-list-item *ngIf="tags != null && tags.length == 0">
+      No tags found
+    </mat-list-item>
   </mat-nav-list>
 
   <mat-spinner *ngIf="tags == null" color="accent" style="margin: 1em auto" diameter="30"></mat-spinner>

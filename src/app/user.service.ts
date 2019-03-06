@@ -163,13 +163,14 @@ export class UserService {
     return UserService.unlock_return.WRONG;
   }
 
-  logout() {
+  async logout() {
     localStorage.removeItem(TEST_ITEM_KEY);
     localStorage.removeItem(TRIES);
     localStorage.removeItem(TOKEN);
     localStorage.removeItem(USER);
     localStorage.removeItem(PW);
-    this.dexie.clear();
+    // TODO: remove settings
+    await this.dexie.clear();
 
     location.href = "/login";
   }

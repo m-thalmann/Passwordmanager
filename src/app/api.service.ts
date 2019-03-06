@@ -86,7 +86,7 @@ export class ApiService {
 
       return ret;
     }catch(e){
-      this.user.logout();
+      await this.user.logout();
     }
   }
 
@@ -107,7 +107,7 @@ export class ApiService {
       return ret;
     } catch (e) {
       if (e.status == 403) {
-        this.user.logout();
+        await this.user.logout();
       } else {
         throw e;
       }
@@ -140,7 +140,7 @@ export class ApiService {
       return ret;
     }catch(e){
       if(e.status == 403){
-        this.user.logout();
+        await this.user.logout();
       }else{
         throw e;
       }
@@ -154,7 +154,7 @@ export class ApiService {
       return ret;
     } catch (e) {
       if (e.status == 403) {
-        this.user.logout();
+        await this.user.logout();
       } else {
         throw e;
       }
@@ -168,7 +168,7 @@ export class ApiService {
       return ret;
     } catch (e) {
       if (e.status == 403) {
-        this.user.logout();
+        await this.user.logout();
       } else {
         throw e;
       }
@@ -182,7 +182,7 @@ export class ApiService {
       return ret;
     } catch (e) {
       if (e.status == 403) {
-        this.user.logout();
+        await this.user.logout();
       } else {
         throw e;
       }
@@ -196,7 +196,7 @@ export class ApiService {
       return ret;
     } catch (e) {
       if (e.status == 403) {
-        this.user.logout();
+        await this.user.logout();
       } else {
         throw e;
       }
@@ -210,7 +210,7 @@ export class ApiService {
       return ret;
     } catch (e) {
       if (e.status == 403) {
-        this.user.logout();
+        await this.user.logout();
       } else {
         throw e;
       }
@@ -227,7 +227,7 @@ export class ApiService {
       return ret;
     } catch (e) {
       if (e.status == 403) {
-        this.user.logout();
+        await this.user.logout();
       } else {
         throw e;
       }

@@ -155,7 +155,7 @@ export class PasswordsService {
       }
     }
 
-    this.reloadDB();
+    await this.reloadDB();
   }
 
   async removeAll(){
@@ -177,7 +177,9 @@ export class PasswordsService {
       localStorage.setItem(DELETED_PASSWORDS, JSON.stringify(dp));
     }
 
-    this.reloadDB();
+    await this.dexie.clear();
+
+    await this.reloadDB();
   }
 
   private check_decrypted(should_be: boolean = true){

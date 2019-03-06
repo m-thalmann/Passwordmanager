@@ -32,7 +32,7 @@ export class MainNavComponent {
     });
 
     await this.api.logout();
-    this.user.logout();
+    await this.user.logout();
   }
 
   toggleSearch(btn_click = true, close = null) {

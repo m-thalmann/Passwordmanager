@@ -203,6 +203,6 @@ export class PageLoginComponent {
     });
 
     await this.api.logout();
-    this.user.logout();
+    await this.user.logout();
   }
 }
