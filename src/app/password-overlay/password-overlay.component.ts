@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { deepEquals, trimObject } from '../functions';
 import { ConfirmOverlayComponent } from '../confirm-overlay/confirm-overlay.component';
+import { BookmarksService } from '../bookmarks.service';
 
 @Component({
   selector: 'app-password-overlay',
@@ -34,7 +35,7 @@ export class PasswordOverlayComponent implements OnInit {
   private default_data: Password = null;
 
   constructor(public dialogRef: MatDialogRef<PasswordOverlayComponent>, @Inject(MAT_DIALOG_DATA) public data: any, public password: PasswordsService,
-    private fb: FormBuilder, private dialog: MatDialog) { }
+    private fb: FormBuilder, private dialog: MatDialog, private bookmarks: BookmarksService) { }
 
   ngOnInit() {
     this.dialogRef.beforeClose().subscribe(() => {
@@ -212,6 +213,24 @@ export class PasswordOverlayComponent implements OnInit {
         await this.password.remove(this.default_data);
       }
     })
+  }
+
+  isBookmarked(){
+    if(this.default_data._id){
+      return this.bookmarks.is(this.default_data._id);
+    }else{
+      return false;
+    }
+  }
+
+  toggleBookmarked(){
+    if(this.default_data._id){
+      this.bookmarks.toggle(this.default_data._id);
+    }
+  }
+
+  hasId(){
+    return !!this.default_data._id;
   }
 
 }

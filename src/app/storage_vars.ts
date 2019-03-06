@@ -8,4 +8,5 @@ export const StorageVars = {
     "TEST_ITEM": PREFIX + "TEST_ITEM",
     "TRIES": PREFIX + "TRIES",
     "PW": PREFIX + "PW",
+    "BOOKMARKS": PREFIX + 'BOOKMARKS',
 };
