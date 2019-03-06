@@ -4,13 +4,7 @@ import { Blowfish } from 'javascript-blowfish';
 import { Md5Pipe } from './md5.pipe';
 import { DexieService } from './dexie.service';
 import { Router } from '@angular/router';
-import { PasswordsService } from './passwords.service';
-
-const TOKEN = 'TOKEN';
-const USER = 'USER';
-const PW = 'PW';
-const TEST_ITEM_KEY = 'TEST';
-const TRIES = 'TRIES';
+import { StorageVars } from './storage_vars';
 
 const TEST_ITEM: string = '94d2a3c6dd19337f2511cdf8b4bf907e==';
 const MAX_TRIES: number = 5;
@@ -43,19 +37,19 @@ export class UserService {
   token: string = null;
 
   login(user: Object, token: string, password: string, remember: boolean): void {
-    localStorage.removeItem(PW);
+    localStorage.removeItem(StorageVars.PW);
 
     this.password = new Md5Pipe().transform(password);
     this.parseUser(user);
     this.token = token;
 
     if(remember){
-      localStorage.setItem(TOKEN, token);
-      localStorage.setItem(USER, JSON.stringify(user));
+      localStorage.setItem(StorageVars.TOKEN, token);
+      localStorage.setItem(StorageVars.USER, JSON.stringify(user));
 
       let bf = new Blowfish(this.password);
       let test_item = bf.base64Encode(bf.encrypt(TEST_ITEM));
-      localStorage.setItem(TEST_ITEM_KEY, test_item);
+      localStorage.setItem(StorageVars.TEST_ITEM, test_item);
     }
   }
 
@@ -70,8 +64,8 @@ export class UserService {
   }
 
   setUser(){
-    let _user = localStorage.getItem(USER);
-    let token = localStorage.getItem(TOKEN);
+    let _user = localStorage.getItem(StorageVars.USER);
+    let token = localStorage.getItem(StorageVars.TOKEN);
 
     try{
       let user = JSON.parse(_user);
@@ -89,7 +83,7 @@ export class UserService {
 
   unlock_pin(pin: number): UserService.unlock_return{
     if(this.hasPIN()){
-      let _tries = localStorage.getItem(TRIES);
+      let _tries = localStorage.getItem(StorageVars.TRIES);
       _tries = _tries ? _tries : "0";
 
       let tries: number = 0;
@@ -104,23 +98,23 @@ export class UserService {
 
       let pin_hash = new Md5Pipe().transform(pin.toString());
 
-      let pw = localStorage.getItem(PW);
+      let pw = localStorage.getItem(StorageVars.PW);
       let bf = new Blowfish(pin_hash);
 
       this.password = bf.trimZeros(bf.decrypt(bf.base64Decode(pw)));
 
       bf = new Blowfish(this.password);
-      let test_item = localStorage.getItem(TEST_ITEM_KEY);
+      let test_item = localStorage.getItem(StorageVars.TEST_ITEM);
       
       if(!test_item)
       return UserService.unlock_return.ERROR;
 
       if (bf.trimZeros(bf.decrypt(bf.base64Decode(test_item))) == TEST_ITEM){
-        localStorage.setItem(TRIES, "0");
+        localStorage.setItem(StorageVars.TRIES, "0");
         return UserService.unlock_return.CORRECT;
       }else{
         this.password = null;
-        localStorage.setItem(TRIES, (tries+1).toString());
+        localStorage.setItem(StorageVars.TRIES, (tries+1).toString());
       }
     }
 
@@ -129,7 +123,7 @@ export class UserService {
 
   unlock(password: string): UserService.unlock_return{
     if(this.hasTest() && this.isKnown()){
-      let _tries = localStorage.getItem(TRIES);
+      let _tries = localStorage.getItem(StorageVars.TRIES);
       _tries = _tries ? _tries : "0";
 
       let tries: number = 0;
@@ -144,7 +138,7 @@ export class UserService {
 
       this.password = new Md5Pipe().transform(password);
 
-      let test_item = localStorage.getItem(TEST_ITEM_KEY);
+      let test_item = localStorage.getItem(StorageVars.TEST_ITEM);
       
       if(!test_item)
         return UserService.unlock_return.ERROR;
@@ -152,11 +146,11 @@ export class UserService {
       let bf = new Blowfish(this.password);
 
       if (bf.trimZeros(bf.decrypt(bf.base64Decode(test_item))) == TEST_ITEM){
-        localStorage.setItem(TRIES, "0");
+        localStorage.setItem(StorageVars.TRIES, "0");
         return UserService.unlock_return.CORRECT;
       }else{
         this.password = null;
-        localStorage.setItem(TRIES, (tries+1).toString());
+        localStorage.setItem(StorageVars.TRIES, (tries+1).toString());
       }
     }
 
@@ -164,12 +158,8 @@ export class UserService {
   }
 
   async logout() {
-    localStorage.removeItem(TEST_ITEM_KEY);
-    localStorage.removeItem(TRIES);
-    localStorage.removeItem(TOKEN);
-    localStorage.removeItem(USER);
-    localStorage.removeItem(PW);
-    // TODO: remove settings
+    Object.keys(StorageVars).forEach(key => localStorage.removeItem(StorageVars[key]));
+
     await this.dexie.clear();
 
     location.href = "/login";
@@ -185,14 +175,14 @@ export class UserService {
   }
 
   isKnown() {
-    let token = localStorage.getItem(TOKEN) != null;
-    let user = localStorage.getItem(USER) != null;
+    let token = localStorage.getItem(StorageVars.TOKEN) != null;
+    let user = localStorage.getItem(StorageVars.USER) != null;
 
     return token && user;
   }
 
   hasPIN(){
-    return localStorage.getItem(PW) != null;
+    return localStorage.getItem(StorageVars.PW) != null;
   }
 
   setPIN(pin: number){
@@ -201,19 +191,19 @@ export class UserService {
 
       let bf = new Blowfish(pin_hash);
       let pw = bf.base64Encode(bf.encrypt(this.password));
-      localStorage.setItem(PW, pw);
+      localStorage.setItem(StorageVars.PW, pw);
     }
   }
   
   removePIN(){
     if(this.isLoggedin()){
-      localStorage.removeItem(TRIES);
-      localStorage.removeItem(PW);
+      localStorage.removeItem(StorageVars.TRIES);
+      localStorage.removeItem(StorageVars.PW);
     }
   }
 
   hasTest(){
-    return localStorage.getItem(TEST_ITEM_KEY) != null;
+    return localStorage.getItem(StorageVars.TEST_ITEM) != null;
   }
 }
 

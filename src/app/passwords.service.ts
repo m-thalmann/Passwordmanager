@@ -5,8 +5,7 @@ import { Blowfish } from 'javascript-blowfish';
 import { Md5Pipe } from './md5.pipe';
 import { DexieService } from './dexie.service';
 import { SyncModeService } from './sync-mode.service';
-
-const DELETED_PASSWORDS = 'DELETED_PASSWORDS';
+import { StorageVars } from './storage_vars';
 
 @Injectable({
   providedIn: 'root'
@@ -145,13 +144,13 @@ export class PasswordsService {
     if(navigator.onLine && this.syncMode.mode == this.syncMode.modes.automatically){
       await this.api.deletePassword(password.id);
     }else{
-      let dp = JSON.parse(localStorage.getItem(DELETED_PASSWORDS));
+      let dp = JSON.parse(localStorage.getItem(StorageVars.DELETED_PASSWORDS));
 
       dp = dp ? dp : [];
       
       if(dp.indexOf(password.id) == -1){
         dp.push(password.id);
-        localStorage.setItem(DELETED_PASSWORDS, JSON.stringify(dp));
+        localStorage.setItem(StorageVars.DELETED_PASSWORDS, JSON.stringify(dp));
       }
     }
 
@@ -164,7 +163,7 @@ export class PasswordsService {
     if(navigator.onLine && this.syncMode.mode == this.syncMode.modes.automatically){
       await this.api.deleteAllPasswords();
     }else{
-      let dp = JSON.parse(localStorage.getItem(DELETED_PASSWORDS));
+      let dp = JSON.parse(localStorage.getItem(StorageVars.DELETED_PASSWORDS));
 
       dp = dp ? dp : [];
 
@@ -174,7 +173,7 @@ export class PasswordsService {
         }
       });
 
-      localStorage.setItem(DELETED_PASSWORDS, JSON.stringify(dp));
+      localStorage.setItem(StorageVars.DELETED_PASSWORDS, JSON.stringify(dp));
     }
 
     await this.dexie.clear();
@@ -291,7 +290,7 @@ export class PasswordsService {
       await this.api.updatePasswords(encSync);
     }
 
-    let dp = JSON.parse(localStorage.getItem(DELETED_PASSWORDS));
+    let dp = JSON.parse(localStorage.getItem(StorageVars.DELETED_PASSWORDS));
 
     dp = dp ? dp : [];
 
@@ -303,7 +302,7 @@ export class PasswordsService {
 
     await Promise.all(prms);
 
-    localStorage.removeItem(DELETED_PASSWORDS);
+    localStorage.removeItem(StorageVars.DELETED_PASSWORDS);
 
     this.passwords = this.decryptCollection(await this.load(), this.user.password);
 

@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { PasswordOverlayComponent } from '../password-overlay/password-overlay.c
   styleUrls: ['./main-nav.component.scss'],
 })
 export class MainNavComponent {
+  @Input() minimal: boolean = false;
 
   currentRoute: string = '/';
   search_opened: boolean = false;

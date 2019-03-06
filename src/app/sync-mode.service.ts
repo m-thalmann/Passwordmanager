@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-
-const SYNC_MODE = 'SYNC_MODE';
+import { StorageVars } from './storage_vars';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +16,11 @@ export class SyncModeService {
     if(!this.modes[mode]){
       throw "Mode not supportet";
     }
-    localStorage.setItem(SYNC_MODE, mode);
+    localStorage.setItem(StorageVars.SYNC_MODE, mode);
   }
 
   get mode(){
-    let ret = localStorage.getItem(SYNC_MODE);
+    let ret = localStorage.getItem(StorageVars.SYNC_MODE);
     return ret ? ret : 'automatically';
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Dexie from 'dexie';
-import { PasswordDexie, ApiService } from './api.service';
+import { PasswordDexie } from './api.service';
 
 const DB_NAME = 'Passwordmanager';
 
