@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{ data.title ? data.title : 'Input' }}</h1>
+<div mat-dialog-content>
+  <p id="content">{{ data.message }}</p>
+  <mat-form-field>
+    <input type="{{ data.type ? data.type : 'text' }}" #input cdkFocusInitial matInput placeholder="{{ data.placeholder ? data.placeholder : '...' }}">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
+  <button mat-button [mat-dialog-close]="input.value">OK</button>
+</div>

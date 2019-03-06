@@ -61,6 +61,24 @@
       </mat-card-actions>
     </mat-card>
 
+    <!-- // TODO: make export/import feature -->
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>import_export</mat-icon>
+        <mat-card-title>Import/Export</mat-card-title>
+      </mat-card-header>
+      <mat-card-actions>
+        <button mat-button (click)="import()">
+          <mat-icon>file_upload</mat-icon>
+          <span>Import</span>
+        </button>
+        <button mat-button (click)="export()">
+          <mat-icon>file_download</mat-icon>
+          <span>Export</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
     <mat-card>
       <mat-card-header>
         <mat-icon mat-card-avatar>delete_forever</mat-icon>

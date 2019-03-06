@@ -1,0 +1,18 @@
+<h3 *ngIf="isExport">
+  <mat-icon>file_download</mat-icon>
+  <span>Export</span>
+</h3>
+<h3 *ngIf="isImport">
+  <mat-icon>file_upload</mat-icon>
+  <span>Import</span>
+</h3>
+<mat-nav-list>
+  <mat-list-item (click)="encrypted($event)">
+    <mat-icon matListIcon>lock</mat-icon>
+    <span mat-line>Encrypted</span>
+  </mat-list-item>
+  <mat-list-item (click)="decrypted($event)">
+    <mat-icon matListIcon>lock_open</mat-icon>
+    <span mat-line>Decrypted</span>
+  </mat-list-item>
+</mat-nav-list>

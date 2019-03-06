@@ -23,6 +23,8 @@ import { TagsListComponent } from './page-tags/tags-list/tags-list.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ConfirmOverlayComponent } from './confirm-overlay/confirm-overlay.component';
 import { PageBookmarksComponent } from './page-bookmarks/page-bookmarks.component';
+import { ExportImportBottomSheetComponent } from './page-settings/export-import-bottom-sheet/export-import-bottom-sheet.component';
+import { PromptOverlayComponent } from './prompt-overlay/prompt-overlay.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { PageBookmarksComponent } from './page-bookmarks/page-bookmarks.componen
     TagsListComponent,
     ConfirmOverlayComponent,
     PageBookmarksComponent,
+    ExportImportBottomSheetComponent,
+    PromptOverlayComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +57,7 @@ import { PageBookmarksComponent } from './page-bookmarks/page-bookmarks.componen
     ReactiveFormsModule,
   ],
   providers: [],
-  entryComponents:[ PasswordOverlayComponent, ConfirmOverlayComponent ],
+  entryComponents:[ PasswordOverlayComponent, ConfirmOverlayComponent, ExportImportBottomSheetComponent, PromptOverlayComponent ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -15,7 +15,8 @@ import {
   MatTooltipModule,
   MatChipsModule,
   MatAutocompleteModule,
-  MatSelectModule
+  MatSelectModule,
+  MatBottomSheetModule
 } from '@angular/material';
 
 import {
@@ -43,6 +44,7 @@ import {
     MatChipsModule,
     MatAutocompleteModule,
     MatSelectModule,
+    MatBottomSheetModule,
   ],
 })
 export class MaterialModule { }

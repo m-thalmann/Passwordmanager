@@ -193,11 +193,11 @@ export class PasswordsService {
     return this.passwords != null;
   }
 
-  private decryptCollection(passwords: PasswordDexie[], pw: string){
+  decryptCollection(passwords: PasswordDexie[], pw: string){
     return passwords.map(el => this.decrypt(el, pw));
   }
 
-  private decrypt(password: PasswordDexie, pw: string){
+  decrypt(password: PasswordDexie, pw: string){
     let element: Password = {
       id: password.id,
       enc_key: null,
@@ -221,11 +221,11 @@ export class PasswordsService {
     return element;
   }
 
-  private encryptCollection(passwords: Password[], pw: string) {
+  encryptCollection(passwords: Password[], pw: string) {
     return passwords.map(el => this.encrypt(el, pw));
   }
 
-  private encrypt(password: Password, pw: string){
+  encrypt(password: Password, pw: string){
     let element: PasswordDexie = {
       id: password.id,
       enc_key: null,

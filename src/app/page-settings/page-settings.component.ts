@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { UserService } from '../user.service';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatSnackBar, MatDialog, MatBottomSheet } from '@angular/material';
 import { Md5Pipe } from '../md5.pipe';
 import { ApiService } from '../api.service';
 import { SyncModeService } from '../sync-mode.service';
 import { PasswordsService } from '../passwords.service';
 import { ConfirmOverlayComponent } from '../confirm-overlay/confirm-overlay.component';
+import { ExportImportBottomSheetComponent } from './export-import-bottom-sheet/export-import-bottom-sheet.component';
 
 @Component({
   selector: 'app-page-settings',
@@ -29,7 +30,7 @@ export class PageSettingsComponent {
   });
 
   constructor(public user: UserService, private api: ApiService, public snackBar: MatSnackBar,
-    private syncMode: SyncModeService, private passwords: PasswordsService, private dialog: MatDialog) { }
+    private syncMode: SyncModeService, private passwords: PasswordsService, private dialog: MatDialog, private bottomSheet: MatBottomSheet) { }
 
   checkPW(){
     let pw = new Md5Pipe().transform(this.password);
@@ -169,5 +170,17 @@ export class PageSettingsComponent {
         this.settings_changing = false;
       }
     })
+  }
+
+  import(){
+    this.bottomSheet.open(ExportImportBottomSheetComponent, {
+      data: 'import'
+    });
+  }
+
+  export(){
+    this.bottomSheet.open(ExportImportBottomSheetComponent, {
+      data: 'export'
+    });
   }
 }

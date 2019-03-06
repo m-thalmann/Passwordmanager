@@ -45,3 +45,13 @@ export function trimObject(object: object){
 
     return object;
 }
+
+export function downloadURI(uri: string, name: string){
+    let link = document.createElement("a");
+    link.className = "uri_download_link";
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
