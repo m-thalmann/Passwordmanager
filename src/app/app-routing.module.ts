@@ -8,6 +8,7 @@ import { PageLoginComponent } from './page-login/page-login.component';
 import { PageRegisterComponent } from './page-register/page-register.component';
 import { AuthGuard } from './auth.guard';
 import { TagsListComponent } from './page-tags/tags-list/tags-list.component';
+import { PageBookmarksComponent } from './page-bookmarks/page-bookmarks.component';
 
 const routes: Routes = [
   { path: 'login', component: PageLoginComponent },
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'tags/:name', component: TagsListComponent, canActivate: [AuthGuard] },
   { path: 'tags', component: PageTagsComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: PageSettingsComponent, canActivate: [AuthGuard] },
+  { path: 'bookmarks', component: PageBookmarksComponent, canActivate: [AuthGuard] },
   { path: 'home', component: PageHomeComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'home' },
 ];

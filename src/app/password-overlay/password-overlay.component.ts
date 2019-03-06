@@ -107,7 +107,7 @@ export class PasswordOverlayComponent implements OnInit {
     this.tags = this.default_data.tags.map(tag => tag.toLowerCase());
   }
 
-  private get changed(){
+  get changed(){
     let value: Password = JSON.parse(JSON.stringify(this.form.value));
     
     return !deepEquals(trimObject(value), trimObject(this.default_data.data)) || !deepEquals(this.tags, this.default_data.tags);
