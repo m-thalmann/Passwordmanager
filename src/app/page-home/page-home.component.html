@@ -1,3 +1,69 @@
-<main-nav (searched)="searched($event)">
-  <h3>Home</h3>
+<main-nav [minimal]="true">
+  <main>
+    <h3>Home</h3>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>lock</mat-icon>
+        <mat-card-title>
+          Passwords
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-actions>
+        <button mat-button routerLink="/passwords">
+          <span>Go to passwords</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>bookmark</mat-icon>
+        <mat-card-title>
+          Bookmarks
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-actions>
+        <button mat-button routerLink="/bookmarks">
+          <span>Go to bookmarks</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>local_offer</mat-icon>
+        <mat-card-title>
+          Tags
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-actions>
+        <button mat-button routerLink="/tags">
+          <span>Go to tags</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>settings</mat-icon>
+        <mat-card-title>
+          Settings
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-actions>
+        <button mat-button routerLink="/settings">
+          <span>Go to settings</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </main>
 </main-nav>
