@@ -25,6 +25,7 @@ import { ConfirmOverlayComponent } from './confirm-overlay/confirm-overlay.compo
 import { PageBookmarksComponent } from './page-bookmarks/page-bookmarks.component';
 import { ExportImportBottomSheetComponent } from './page-settings/export-import-bottom-sheet/export-import-bottom-sheet.component';
 import { PromptOverlayComponent } from './prompt-overlay/prompt-overlay.component';
+import { ImportUploadOverlayComponent } from './page-settings/import-upload-overlay/import-upload-overlay.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { PromptOverlayComponent } from './prompt-overlay/prompt-overlay.componen
     PageBookmarksComponent,
     ExportImportBottomSheetComponent,
     PromptOverlayComponent,
+    ImportUploadOverlayComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,7 +59,7 @@ import { PromptOverlayComponent } from './prompt-overlay/prompt-overlay.componen
     ReactiveFormsModule,
   ],
   providers: [],
-  entryComponents:[ PasswordOverlayComponent, ConfirmOverlayComponent, ExportImportBottomSheetComponent, PromptOverlayComponent ],
+  entryComponents:[ PasswordOverlayComponent, ConfirmOverlayComponent, ExportImportBottomSheetComponent, PromptOverlayComponent, ImportUploadOverlayComponent ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
