@@ -26,6 +26,8 @@ import { PageBookmarksComponent } from './page-bookmarks/page-bookmarks.componen
 import { ExportImportBottomSheetComponent } from './page-settings/export-import-bottom-sheet/export-import-bottom-sheet.component';
 import { PromptOverlayComponent } from './prompt-overlay/prompt-overlay.component';
 import { ImportUploadOverlayComponent } from './page-settings/import-upload-overlay/import-upload-overlay.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,7 @@ import { ImportUploadOverlayComponent } from './page-settings/import-upload-over
     MaterialModule,
     LayoutModule,
     ReactiveFormsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [],
   entryComponents:[ PasswordOverlayComponent, ConfirmOverlayComponent, ExportImportBottomSheetComponent, PromptOverlayComponent, ImportUploadOverlayComponent ],
