@@ -4,10 +4,13 @@ This passwordmanager is a progressive-web-app (PWA). It is able to store your pa
 
 ## Used sources
 - Angular 7 (https://angular.io/)
-- Workbox (https://developers.google.com/web/tools/workbox/)
 - Dexiejs (https://dexie.org/)
 - Fontawesome (https://fontawesome.com/)
 - angular/material-design (https://material.angular.io/)
+
+## How are my passwords stored?
+Each password has a encryption-key, whitch is used to decrypt the data. The key itself is encrypted with your master-password through the blowfish algorithm.
+After decrypting the encryption-key, it is used, again through the blowfish algorithm, to decrypt the password-data.
 
 ## Using this repository
 
