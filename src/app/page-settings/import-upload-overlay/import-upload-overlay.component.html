@@ -1,14 +1,14 @@
 <h1 mat-dialog-title>Import</h1>
 <div mat-dialog-content>
   <p id="content">Upload the *.csv file to import passwords</p>
-  <input type="file" #input style="display: none" accept=".csv">
-  <button (click)="input.click()" cdkFocusInitial mat-button>
+  <input type="file" style="display: none" accept=".csv" (change)="selectedFile = $event.target.files" #input>
+  <button (click)="input.click()" cdkFocusInitial mat-flat-button color="primary">
     <mat-icon>attach_file</mat-icon>
-    <span *ngIf="input.files.length == 0">Select file</span>
-    <span *ngIf="input.files.length == 1">{{ input.files[0].name }}</span> <!-- // TODO: fix bug with only showing update when unfocus -->
+    <span *ngIf="selectedFile == null">Select file</span>
+    <span *ngIf="selectedFile != null">{{ selectedFile.name }}</span>
   </button>
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]="null">Cancel</button>
-  <button mat-button [mat-dialog-close]="input.files[0]" [disabled]="input.files.length == 0">OK</button>
+  <button mat-button [mat-dialog-close]="selectedFile" [disabled]="selectedFile == null">OK</button>
 </div>

@@ -233,4 +233,8 @@ export class PasswordOverlayComponent implements OnInit {
     return !!this.default_data._id;
   }
 
+  get last_changed(){
+    return this.default_data.last_changed;
+  }
+
 }

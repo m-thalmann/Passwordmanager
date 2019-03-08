@@ -202,7 +202,7 @@ export class ExportImportBottomSheetComponent implements OnInit {
         if(body != null){
           let header: string[] = body.splice(0, 1)[0];
   
-          this.import(header, body);
+          this.importDecrypted(header, body);
         }
       }catch(e){
         this.snackBar.open(e, "OK", {
@@ -219,7 +219,7 @@ export class ExportImportBottomSheetComponent implements OnInit {
     downloadURI(encodeURI('data:application/csv;charset=utf-8,' + data), 'export.csv');
   }
 
-  private async import(header: string[], body: string[][]){
+  private async importDecrypted(header: string[], body: string[][]){
     let passwords: Password[] = [];
 
     body.forEach(row => {
@@ -237,8 +237,20 @@ export class ExportImportBottomSheetComponent implements OnInit {
             if(!password['data']['additional_data']){
               password['data']['additional_data'] = [];
             }
-  
-            password['data']['additional_data'][header[index]] = col;
+
+            let pos = password['data']['additional_data'].map((dt: { name: string, value: string }) => dt.name).indexOf(header[index]);
+
+            if(pos != -1){
+              password['data']['additional_data'][pos] = {
+                name: header[index],
+                value: col
+              };
+            }else{
+              password['data']['additional_data'].push({
+                name: header[index],
+                value: col
+              });
+            }
           }else if(header[index] == 'id'){
             password.id = parseInt(col);
           }else if(header[index] == 'enc_key'){
