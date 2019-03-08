@@ -12,6 +12,10 @@ This passwordmanager is a progressive-web-app (PWA). It is able to store your pa
 Each password has a encryption-key, whitch is used to decrypt the data. The key itself is encrypted with your master-password through the blowfish algorithm.
 After decrypting the encryption-key, it is used, again through the blowfish algorithm, to decrypt the password-data.
 
+## Database / API
+A sample database/api implementation is provided here: https://github.com/m-thalmann/PasswordmanagerAPI<br>
+You can either use it directly or implement one on your own.
+
 ## Using this repository
 
 First of all you have to clone this repository. You will need to have nodejs and npm installed for the next command.
