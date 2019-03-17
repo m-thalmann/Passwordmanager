@@ -52,11 +52,9 @@ export class PagePasswordsComponent implements OnInit, OnDestroy{
       let encrypted = pword['data']['password'];
       encrypted = sha1(encrypted);
       let shortenc = encrypted.substring(0, 5);
-      console.log(encrypted);
       this.check_subscription = this.http.get('https://api.pwnedpasswords.com/range/' + shortenc, {responseType: 'text'}).subscribe(data => {
         let arr = data.split('\n');
         arr.forEach(hash => {
-          console.log(encrypted.toUpperCase());
           if ( encrypted.toUpperCase() === shortenc.toUpperCase() + hash.substring(0, hash.indexOf(':'))) {
             console.log('found password ' + hash.substring(hash.indexOf(':')) + ' times');
           }
