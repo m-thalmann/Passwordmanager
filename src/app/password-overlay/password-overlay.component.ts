@@ -242,7 +242,7 @@ export class PasswordOverlayComponent implements OnInit {
 
   genpass() {
     let pass = this.random.generate();
-    this.passvalue.nativeElement.value = pass;
+    this.form.controls['password'].setValue(pass);
     this.passvalue.nativeElement.type = 'text';
 
   }
