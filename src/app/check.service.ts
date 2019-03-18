@@ -19,10 +19,10 @@ export class CheckService {
     this._checked = checked;
   }
 
-  contains(index: number) {
+  contains(id: number) {
     let ret = false;
     this.checked.forEach(pass => {
-      if(pass["index"] == index) {
+      if(pass["id"] == id) {
         ret = true;
       }
     });
@@ -30,7 +30,6 @@ export class CheckService {
   }
 
   async check(pwords) {
-    let index = 0;
     let res = [];
     pwords.map(async pword => {
       let encrypted = pword['data']['password'];
@@ -41,18 +40,17 @@ export class CheckService {
       let arr = data.split('\n');
       arr.forEach(hash => {
         if ( encrypted.toUpperCase() === shortenc.toUpperCase() + hash.substring(0, hash.indexOf(':'))) {
-          res.push({"index": index, "times": hash.substring(hash.indexOf(':')+1,hash.indexOf("\r"))})
+          res.push({"id": pword['id'], "times": hash.substring(hash.indexOf(':')+1,hash.indexOf("\r"))})
         }
       });
-      index ++;
       this.checked = res;
     });
   }
 
-  getByIndex(index) {
+  getById(id) {
     let ret = null;
     this.checked.forEach(i => {
-      if(i["index"] == index) {
+      if(i["id"] == id) {
         ret = i;
       }
     });
