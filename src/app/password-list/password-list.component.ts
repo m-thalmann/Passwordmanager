@@ -1,3 +1,4 @@
+import { CheckService } from './../check.service';
 import { Component, Input } from '@angular/core';
 import { Password } from '../api.service';
 import { copyToClipboard } from '../functions';
@@ -14,7 +15,7 @@ import { map } from 'rxjs/operators';
 })
 export class PasswordListComponent {
   @Input() passwords: Password[] = null;
-  
+
   tag_amount: number = 10;
   tag_amount_mobile: number = 5;
 
@@ -23,7 +24,7 @@ export class PasswordListComponent {
       map(result => result.matches)
     );
 
-  constructor(private snackBar: MatSnackBar, private dialog: MatDialog, private breakpointObserver: BreakpointObserver) {}
+  constructor(private snackBar: MatSnackBar, private dialog: MatDialog, private breakpointObserver: BreakpointObserver, public check: CheckService) {}
 
   copy(pw: string, text: string){
     copyToClipboard(pw ? pw : "");

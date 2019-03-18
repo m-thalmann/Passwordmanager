@@ -1,3 +1,4 @@
+import { CheckService } from './../check.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PasswordsService } from '../passwords.service';
@@ -23,9 +24,8 @@ export class PagePasswordsComponent implements OnInit, OnDestroy{
 
 
   private pword_subscription = null;
-  private check_subscription = null;
 
-  constructor(private passwords: PasswordsService, private http: HttpClient) {
+  constructor(private passwords: PasswordsService, private http: HttpClient, private checked: CheckService) {
   }
 
   ngOnInit() {
@@ -35,32 +35,40 @@ export class PagePasswordsComponent implements OnInit, OnDestroy{
       this.pword_subscription = this.passwords.get().subscribe((data: Password[]) => {
         this._pwords = data;
       });
+
+      this.check();
+
     });
+
+
+
   }
 
   ngOnDestroy() {
     this.pword_subscription.unsubscribe();
-    this.check_subscription.unsubscribe();
   }
 
   searched(search: string) {
     this.search = search;
   }
-  async check() {
 
-    this._pwords.map(pword => {
+  async check() {
+    let index = 0;
+    let res = [];
+    this._pwords.map(async pword => {
       let encrypted = pword['data']['password'];
       encrypted = sha1(encrypted);
       let shortenc = encrypted.substring(0, 5);
-      this.check_subscription = this.http.get('https://api.pwnedpasswords.com/range/' + shortenc, {responseType: 'text'}).subscribe(data => {
-        let arr = data.split('\n');
-        arr.forEach(hash => {
-          if ( encrypted.toUpperCase() === shortenc.toUpperCase() + hash.substring(0, hash.indexOf(':'))) {
-            console.log('found password ' + hash.substring(hash.indexOf(':')) + ' times');
-          }
-        });
-      });
+      let data = await this.http.get('https://api.pwnedpasswords.com/range/' + shortenc, {responseType: 'text'}).toPromise();
 
-  });
-}
+      let arr = data.split('\n');
+      arr.forEach(hash => {
+        if ( encrypted.toUpperCase() === shortenc.toUpperCase() + hash.substring(0, hash.indexOf(':'))) {
+          res.push({"index": index, "times": hash.substring(hash.indexOf(':')+1,hash.indexOf("\r"))})
+        }
+      });
+      index ++;
+      this.checked.checked = res;
+    });
+  }
 }
