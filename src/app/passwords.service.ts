@@ -28,7 +28,7 @@ export class PasswordsService {
   async unlock(){
     if(!this.decrypted){
       let passwords: PasswordDexie[] = null;
-      
+
       if(navigator.onLine && this.syncMode.mode == this.syncMode.modes.automatically){
         passwords = await this.load();
       }else{
@@ -49,7 +49,7 @@ export class PasswordsService {
     let ids = (await this.dexie.getAll()).map(pw => { return { id: pw.id, _id: pw._id } }).filter(pw => pw.id != -1);
 
     let passwords = await this.api.loadPasswords();
-        
+
     await this.dexie.updateCollection(passwords);
 
     let prms = [];
@@ -147,7 +147,7 @@ export class PasswordsService {
       let dp = JSON.parse(localStorage.getItem(StorageVars.DELETED_PASSWORDS));
 
       dp = dp ? dp : [];
-      
+
       if(dp.indexOf(password.id) == -1){
         dp.push(password.id);
         localStorage.setItem(StorageVars.DELETED_PASSWORDS, JSON.stringify(dp));
@@ -159,7 +159,7 @@ export class PasswordsService {
 
   async removeAll(){
     await this.unlock();
-    
+
     if(navigator.onLine && this.syncMode.mode == this.syncMode.modes.automatically){
       await this.api.deleteAllPasswords();
     }else{
@@ -286,7 +286,7 @@ export class PasswordsService {
 
     if(toSync.length > 0){
       let encSync = this.encryptCollection(toSync, this.user.password);
-  
+
       await this.api.updatePasswords(encSync);
     }
 

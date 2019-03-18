@@ -9,6 +9,7 @@ import { startWith, map } from 'rxjs/operators';
 import { deepEquals, trimObject } from '../functions';
 import { ConfirmOverlayComponent } from '../confirm-overlay/confirm-overlay.component';
 import { BookmarksService } from '../bookmarks.service';
+import { RandompassService } from '../randompass.service';
 
 @Component({
   selector: 'app-password-overlay',
@@ -21,6 +22,8 @@ export class PasswordOverlayComponent implements OnInit {
   pword: Password = null;
 
   form: FormGroup;
+
+  @ViewChild('password_input') passvalue;
 
   tags_all: string[] = Object.keys(TagIconPipe.known).map(tag => tag.toLowerCase());
   tagsCtrl = new FormControl();
@@ -35,7 +38,7 @@ export class PasswordOverlayComponent implements OnInit {
   private default_data: Password = null;
 
   constructor(public dialogRef: MatDialogRef<PasswordOverlayComponent>, @Inject(MAT_DIALOG_DATA) public data: any, public password: PasswordsService,
-    private fb: FormBuilder, private dialog: MatDialog, private bookmarks: BookmarksService) { }
+    private fb: FormBuilder, private dialog: MatDialog, private bookmarks: BookmarksService, private random: RandompassService) { }
 
   ngOnInit() {
     this.dialogRef.beforeClose().subscribe(() => {
@@ -109,7 +112,7 @@ export class PasswordOverlayComponent implements OnInit {
 
   get changed(){
     let value: Password = JSON.parse(JSON.stringify(this.form.value));
-    
+
     return !deepEquals(trimObject(value), trimObject(this.default_data.data)) || !deepEquals(this.tags, this.default_data.tags);
   }
 
@@ -146,7 +149,7 @@ export class PasswordOverlayComponent implements OnInit {
         this.setFormData();
       }
     }
-    
+
     this.edit_mode = !this.edit_mode;
   }
 
@@ -235,6 +238,13 @@ export class PasswordOverlayComponent implements OnInit {
 
   get last_changed(){
     return this.default_data.last_changed;
+  }
+
+  genpass() {
+    let pass = this.random.generate();
+    this.passvalue.nativeElement.value = pass;
+    this.passvalue.nativeElement.type = 'text';
+
   }
 
 }
