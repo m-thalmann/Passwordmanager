@@ -48,4 +48,14 @@ export class CheckService {
       this.checked = res;
     });
   }
+
+  getByIndex(index) {
+    let ret = null;
+    this.checked.forEach(i => {
+      if(i["index"] == index) {
+        ret = i;
+      }
+    });
+    return ret;
+  }
 }
