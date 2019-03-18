@@ -32,7 +32,6 @@ export class PagePasswordsComponent implements OnInit, OnDestroy{
       });
 
       this.check.check(this._pwords);
-
     });
   }
 
