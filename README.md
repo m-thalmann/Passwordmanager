@@ -2,6 +2,8 @@
 
 This passwordmanager is a progressive-web-app (PWA). It is able to store your passwords (safely) on a database or only on your local device.
 
+**Warning:** This repository is not maintained any more!
+
 ## Used sources
 - Angular 7 (https://angular.io/)
 - Dexiejs (https://dexie.org/)
